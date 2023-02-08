@@ -25,7 +25,15 @@ class model:
         self.xt = xt                       # Target domain X data
         self.mu = np.mean(x, 0)            # Column means of x
         self.mu_s = np.mean(xs, 0)         # Column means of xs
-        self.mu_t = np.mean(xt, 0)         # Column means of xt 
+        if(type(self.xt) is list):         # Column Means of xt
+            self.ndomains = len(self.xt)   # Multiple Target Domains
+            mu_t = np.zeros([self.ndomains, self.k])
+
+            for i in range(self.ndomains):
+                mu_t[i, :] = np.mean(self.xt[i], 0)
+            self.mu_t = mu_t
+        else:
+            self.mu_t = np.mean(xt, 0)     # Single Target Domain  
         self.T = []                        # Projections (scores)
         self.Ts = []                       # Source domain scores
         self.Tt = []                       # Target domain scores
@@ -42,7 +50,7 @@ class model:
         self.C = []                        # Inner relationship coefficients such that y = c*T
 
 
-    def fit(self, l=0, centering=True, heuristic=False):
+    def fit(self, l=0, centering=True, heuristic=False, target_domain=0):
         """
         Fit di-PLS model.
         
@@ -58,18 +66,33 @@ class model:
             
         heuristic: bool
             If True the regularization parameter is set to a heuristic value
-                        
+
+        target_domain: int
+            If multiple target domains are passed, target_domain specifies for which of the target domains
+            the model should apply. If target_domain=0, the model applies to the source domain,
+            if target_domain=1, the model applies to the first target domain etc.
+        
         """
            
         # Mean Centering
         b0 = np.mean(self.y)
         y = self.y - b0
 
+
         if centering is True:
 
             x = self.x[..., :] - self.mu   
             xs = self.xs[..., :] - self.mu_s
-            xt = self.xt[..., :] - self.mu_t
+
+
+            # Mutliple target domains
+            if(type(self.xt) is list):
+
+                xt = [self.xt[i][..., :] - self.mu_t[i, :] for i in range(self.ndomains)]
+
+            else:
+
+                xt = self.xt[..., :] - self.mu_t
 
 
         else:
@@ -81,7 +104,7 @@ class model:
     
         # Fit model and store matrices
         A = self.A
-        (b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy) = algo.dipals(x, y, xs, xt, A, l, heuristic=heuristic)
+        (b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy) = algo.dipals(x, y, xs, xt, A, l, heuristic=heuristic, target_domain=target_domain)
              
         self.b = b
         self.b0 = b0
@@ -98,9 +121,11 @@ class model:
         self.Ey = Ey
         self.C = C
         self.discrepancy = discrepancy
+        self.target_domain = target_domain
         
         
         if heuristic is True:
+
             self.opt_l = opt_l
 
             
@@ -138,7 +163,19 @@ class model:
 
             if(rescale == 'Target'):
 
-                Xtest = x_test[...,:] - self.mu_t
+                if(type(self.xt) is list):
+
+                    if(self.target_domain==0):
+
+                        Xtest = x_test[...,:] - self.mu_s
+
+                    else:
+
+                        Xtest = x_test[...,:] - self.mu_t[self.target_domain-1, :]
+
+                else:
+
+                    Xtest = x_test[...,:] - self.mu_t
 
             elif(rescale == 'Source'):
 
