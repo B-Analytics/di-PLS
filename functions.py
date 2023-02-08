@@ -17,11 +17,11 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def dipals(x, y, xs, xt, A, l, heuristic=False):
+def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
         '''
-        Domain-invariant partial least squares regression (di-PLS) performs PLS regression 
-        using labeled Source domain data x (=xs) and y and unlabeled Target domain data (xt)
-        with the goal to fit an (invariant) model that generalizes over both domains.
+        (Multiple) Domain-invariant partial least squares regression ((m)di-PLS) performs PLS regression 
+        using labeled Source domain data x (=xs) and y and unlabeled Target domain data (xt_1,...,xt_k)
+        with the goal to fit an (invariant) model that generalizes over all domains.
 
 
         References:
@@ -37,6 +37,10 @@ def dipals(x, y, xs, xt, A, l, heuristic=False):
           Domain adaptation for regression under Beer–Lambert’s law, Knowledge-Based Systems, 
           2020 (210) DOI: 10.1016/j.knosys.2020.106447
 
+        (4) Bianca Mikulasek, Valeria Fonseca Diaz, David Gabauer, Christoph Herwig, Ramin Nikzad-Langerodi,
+          Partial least squares regression with multiple domains, J. Chemometrics, 2023 (to appear). 
+          doi: 10.13140/RG.2.2.23750.75845
+
             
         Parameters
         ----------
@@ -49,8 +53,9 @@ def dipals(x, y, xs, xt, A, l, heuristic=False):
         xs: numpy array (N_S,K) 
             Source domain data
         
-        xt: numpy array (N_T, K)
-            Target domain data. 
+        xt: numpy array (N_T, K) or list of z (N_z, K) numpy arrays
+            Target domain data. If list is passed multiple target domains are considered
+            in the optimization
             
         A: int
             Number of latent variables
@@ -65,6 +70,11 @@ def dipals(x, y, xs, xt, A, l, heuristic=False):
             i) Fitting the output variable y and 
             ii) Minimizing domain discrepancy.
             For details see ref. (3).
+
+        target_domain: int
+            If multiple target domains are passed, target_domain specifies for which of the target domains
+            the model should apply. If target_domain=0, the model applies to the source domain,
+            if target_domain=1, the model applies to the first target domain etc.
     
             
         Returns
@@ -117,24 +127,39 @@ def dipals(x, y, xs, xt, A, l, heuristic=False):
         # Get array dimensions
         (n, k) = np.shape(x)
         (ns, k) = np.shape(xs)
-        (nt, k) = np.shape(xt)
         
-
         # Initialize matrices
+        Xt = xt
+
+        if(type(xt) is list):
+            Pt = []
+            Tt = []
+
+
+            for z in range(len(xt)):
+
+                    Tti = np.zeros([np.shape(xt[z])[0], A])
+                    Pti = np.zeros([k, A])
+
+                    Pt.append(Pti)
+                    Tt.append(Tti)
+
+
+        else:
+
+            (nt, k) = np.shape(xt)
+            Tt = np.zeros([nt, A])
+            Pt = np.zeros([k, A])
+
+
         T = np.zeros([n, A])
         P = np.zeros([k, A])
-
-        Tt = np.zeros([nt, A])
-        Pt = np.zeros([k, A])
-
         Ts = np.zeros([ns, A])
         Ps = np.zeros([k, A])
-
         W = np.zeros([k, A])
         C = np.zeros([A, 1])
         opt_l = np.zeros(A)
         discrepancy = np.zeros(A)
-
         I = np.eye(k)
 
         # Compute LVs
@@ -157,35 +182,82 @@ def dipals(x, y, xs, xt, A, l, heuristic=False):
             w_pls = ((y.T@x)/(y.T@y))  # Ordinary PLS solution
 
 
+            if(lA != 0 or heuristic is True):  # In case of regularization
 
-            # Convex relaxation of covariance difference matrix
-            D = convex_relaxation(xs, xt)
+                 if(type(xt) is not list):
 
-            if(heuristic is True): # Regularization parameter heuristic
+                    # Convex relaxation of covariance difference matrix
+                    D = convex_relaxation(xs, xt)
 
-                w_pls = w_pls/np.linalg.norm(w_pls)
-                gamma = (np.linalg.norm((x-y@w_pls))**2)/(w_pls@D@w_pls.T)
-                opt_l[i] = gamma
-                lA = gamma
+                # Multiple target domains
+                 elif(type(xt) is list):
+
+                    #print('Relaxing domains ... ')
+                    ndoms = len(xt)
+                    D = np.zeros([k, k])
+
+                    for z in range(ndoms):
+
+                        d = convex_relaxation(xs, xt[z])
+                        D = D + d
+
+                 else:
+
+                    print('xt must either be a matrix or list of (appropriately dimensioned) matrices')
+
+                 if(heuristic is True): # Regularization parameter heuristic
+
+                    w_pls = w_pls/np.linalg.norm(w_pls)
+                    gamma = (np.linalg.norm((x-y@w_pls))**2)/(w_pls@D@w_pls.T)
+                    opt_l[i] = gamma
+                    lA = gamma
+
+                 else:
+
+                    # di-PLS
+                    # reg = (np.linalg.inv(I+lA/((y.T@y))*D))
+                    # w = w_pls@reg
+                    reg = I+lA/((y.T@y))*D
+                    w = scipy.linalg.solve(reg.T, w_pls.T, assume_a='sym').T  # 10 times faster than previous comptation of reg
+
+                 # Normalize w
+                 w = w/np.linalg.norm(w)
+
+                 # Absolute difference between variance of source and target domain projections
+                 discrepancy[i] = w@D@w.T
+
+            else:        
+
+                if(type(xt) is list):
+
+                    D = convex_relaxation(xs, xt[0])
+
+                else:
+
+                    D = convex_relaxation(xs, xt)
+
+                
+                w = w_pls/np.linalg.norm(w_pls)
+                discrepancy[i] = w@D@w.T
 
         
-            # Compute di-PLS weight vector
-            # reg = (np.linalg.inv(I+lA/((y.T@y))*D))
-            # w = w_pls@reg
-            reg = I+lA/((y.T@y))*D
-            w = scipy.linalg.solve(reg.T, w_pls.T, assume_a='sym').T  # ~10 times faster
-
-            # Normalize w
-            w = w/np.linalg.norm(w)
-
-            # Absolute difference between variance of source and target domain projections
-            discrepancy[i] = w@D@w.T
-                            
-
             # Compute scores
             t = x@w.T
             ts = xs@w.T
-            tt = xt@w.T
+            
+            if(type(xt) is list):
+
+                tt = []
+
+                for z in range(len(xt)):
+
+                    tti = xt[z]@w.T
+                    tt.append(tti)
+
+            else:
+
+                tt = xt@w.T
+
 
             # Regress y on t
             c = (y.T@t)/(t.T@t)
@@ -193,27 +265,97 @@ def dipals(x, y, xs, xt, A, l, heuristic=False):
             # Compute loadings
             p = (t.T@x)/(t.T@t)
             ps = (ts.T@xs)/(ts.T@ts)
-            pt = (tt.T@xt)/(tt.T@tt)
+            if(type(xt) is list):
+
+                pt = []
+
+                for z in range(len(xt)):
+
+                    pti = (tt[z].T@xt[z])/(tt[z].T@tt[z])
+                    pt.append(pti)
+
+            else:
+
+                pt = (tt.T@xt)/(tt.T@tt)
+
 
             # Deflate X and y (Gram-Schmidt orthogonalization)
             x = x - t@p
             xs = xs - ts@ps
-            xt = xt - tt@pt
+            if(type(xt) is list):
+
+                for z in range(len(xt)):
+
+                    xt[z] = xt[z] - tt[z]@pt[z]
+
+            else:
+
+                if(np.sum(xt) != 0):  # Deflate target matrix only if not zero
+
+                    xt = xt - tt@pt
+
+
             y = y - t*c
 
             # Store w,t,p,c
             W[:, i] = w
             T[:, i] = t.reshape(n)
             Ts[:, i] = ts.reshape(ns)
-            Tt[:, i] = tt.reshape(nt)
             P[:, i] = p.reshape(k)
             Ps[:, i] = ps.reshape(k)
-            Pt[:, i] = pt.reshape(k)
-            C[i] = c                
+            C[i] = c       
+
+            if(type(xt) is list):
+
+                for z in range(len(xt)):
+
+                    Pt[z][:, i] = pt[z].reshape(k)
+                    Tt[z][:, i] = tt[z].reshape(np.shape(xt[z])[0])
+
+            else:
+                
+                Pt[:, i] = pt.reshape(k)
+                Tt[:, i] = tt.reshape(nt)         
 
 
         # Calculate regression vector
-        b = W@(np.linalg.inv(P.T@W))@C
+        if type(l) is np.ndarray and np.any(xt != 0):  # Check if multiple regularization
+                # parameters are passed (one for each LV)
+
+                b = W@(np.linalg.inv(Pt.T@W))@C
+
+        elif(type(l) is np.int or type(l) is np.float64):
+
+                if l==0:
+                    b = W@(np.linalg.inv(Ps.T@W))@C
+
+                elif np.any(xt != 0): 
+                    b = W@(np.linalg.inv(Pt.T@W))@C
+
+                else:
+                    b = W@(np.linalg.inv(Ps.T@W))@C
+
+        elif np.any(xt != 0):
+
+            if(type(xt) is list):
+    
+                if(target_domain==0):
+
+                    b = W@(np.linalg.inv(Ps.T@W))@C
+
+                else:
+
+                    b = W@(np.linalg.inv(Pt[target_domain-1].T@W))@C
+
+            else:
+
+                b = W@(np.linalg.inv(Pt.T@W))@C
+            
+
+        else:
+
+            b = W@(np.linalg.inv(Ps.T@W))@C
+
 
         # Store residuals
         E = x
