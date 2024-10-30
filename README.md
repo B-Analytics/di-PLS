@@ -1,8 +1,11 @@
 # Domain-invariant partial least squares regression (di-PLS)
 
-Python implementation of di-PLS for domain adaptation in multivariate regression problems. 
+![](https://img.shields.io/badge/python-3.13-blue.svg)
 
-![demo](https://user-images.githubusercontent.com/77445667/104728864-d5fede80-5737-11eb-8aad-59f9901a0cf4.png)
+
+Python implementation of (m)di-PLS for domain adaptation in multivariate regression problems. 
+
+![](https://user-images.githubusercontent.com/77445667/104728864-d5fede80-5737-11eb-8aad-59f9901a0cf4.png)
 
 ## How to apply di-PLS
 Train regression model
@@ -10,7 +13,7 @@ Train regression model
 import dipals as ml
 
 m = ml.model(X, y, X_source, X_target, 2)
-l = 100000 #  Regularization
+l = [100000] #  Regularization
 m.fit(l)
 
 # Typically X=X_source and y are the corresponding response values
@@ -18,8 +21,26 @@ m.fit(l)
 Apply the model 
 ```python
 yhat_dipls, err = m.predict(X_test, y_test=[])
-
 ```
+
+## How to apply mdi-PLS
+```python
+import dipals as ml
+
+# Training
+m = ml.model(X, y, X_source, X_target, 2)
+l = [100000] #  Regularization
+m.fit(l, target_domain=2)
+
+# Testing
+yhat_dipls, err = m.predict(X_test, y_test=[])
+
+
+# X_target = [X1, X2, ... , Xk] is a list of target domain data
+# The parameter target_domain specifies for which domain the model should be trained (here X2).
+```
+
+
 
 # Acknowledgements
 The first version of di-PLS was developed by Ramin Nikzad-Langerodi, Werner Zellinger, Edwin Lughofer, Bernhard Moser and Susanne Saminger-Platz
