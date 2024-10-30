@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: diPLSlib
-Version: 1.0.0
+Version: 1.0.2
 Summary: Python package for domain adaptation in multivariate regression
 Home-page: https://github.com/B-Analytics/di-PLS
 Author: Ramin Nikzad-Langerodi
@@ -26,14 +26,14 @@ Python implementation of (m)di-PLS for domain adaptation in multivariate regress
 
 # Installation
 ```bash
-pip install .\dist\diplslib-1.0.0.tar.gz
+pip install diPLSlib
 ```
 
 # Usage 
 ## How to apply di-PLS
 Train regression model
 ```python
-import dipals as ml
+from diPLSlib import dipals as ml
 
 m = ml.model(X, y, X_source, X_target, 2)
 l = [100000] #  Regularization
@@ -48,7 +48,7 @@ yhat_dipls, err = m.predict(X_test, y_test=[])
 
 ## How to apply mdi-PLS
 ```python
-import dipals as ml
+from diPLSlib import dipals as ml
 
 # Training
 m = ml.model(X, y, X_source, X_target, 2)

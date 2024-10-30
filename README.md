@@ -16,7 +16,7 @@ pip install diPLSlib
 ## How to apply di-PLS
 Train regression model
 ```python
-import dipals as ml
+from diPLSlib import dipals as ml
 
 m = ml.model(X, y, X_source, X_target, 2)
 l = [100000] #  Regularization
@@ -31,7 +31,7 @@ yhat_dipls, err = m.predict(X_test, y_test=[])
 
 ## How to apply mdi-PLS
 ```python
-import dipals as ml
+from diPLSlib import dipals as ml
 
 # Training
 m = ml.model(X, y, X_source, X_target, 2)
