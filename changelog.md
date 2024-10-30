@@ -59,7 +59,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - N/A
 
-[2.0.0]: https://github.com/your-repo/releases/tag/v2.0.0
+[2.0.0]: https://github.com/B-Analytics/di-PLS/releases/tag/v2.0.0
 
 
 
