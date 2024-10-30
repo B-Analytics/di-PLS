@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="diPLSlib",
-    version="1.0.2",
+    version="2.0.0",
     author="Ramin Nikzad-Langerodi",
     author_email="ramin.nikzad-langerodi@scch.at",
     description="Python package for domain adaptation in multivariate regression",
@@ -22,6 +22,6 @@ setuptools.setup(
     install_requires=[
         'numpy',
         'matplotlib',
-        'scipy',
+        'scipy'
     ]
 )

@@ -13,7 +13,7 @@ from diPLSlib import functions as algo
 import scipy.stats
 
 
-class model:
+class DIPLS:
     def __init__(self, x, y, xs, xt, A):
         self.x = x                         # Labeled X-Data (usually x = xs)
         self.n = np.shape(x)[0]            # Number of X samples
@@ -57,12 +57,12 @@ class model:
         
         Parameters
         ----------
-        l: float or numpy array (1 x A)
-            Regularization parameter. Either a single or different l's for each
+        l: list
+            Regularization parameter. Either a single or different l's for each LV
             can be passed
             
         centering: bool
-            If True Source and Target Domain Data are Mean Centered (default)
+            If set to True, Source and Target Domain Data are Mean Centered (default)
             
         heuristic: bool
             If True the regularization parameter is set to a heuristic value
@@ -201,5 +201,66 @@ class model:
 
         return yhat,error
 
+
+
+# Create a separate class for GCT-PLS model inheriting from class model
+class GCTPLS(DIPLS):
+    def __init__(self, x:np.ndarray, y:np.ndarray, xs:np.ndarray, xt:np.ndarray, A:int=2):
+        
+        DIPLS.__init__(self, x, y, xs, xt, A)
+
+        
+    def fit(self, l=0, centering=True, heuristic=False):
+        """
+        Fit GCT-PLS model.
+        
+        Parameters
+        ----------
+        l:  list
+            Regularization parameter. Either a single or different l's for each LV
+            can be passed
+
+        centering: bool
+            If set to True, Source and Target Domain Data are Mean Centered (default)
+            
+        heuristic: bool
+            If True the regularization parameter is set to a heuristic value
+
+        
+        """
+        
+        # Mean Centering
+        if centering is True:
+            
+            x = self.x[...,:] - self.mu
+            y = self.y - self.b0
+
+        else: 
+            
+            x = self.x
+            y = self.y
+
+
+        xs = self.xs
+        xt = self.xt
+            
+        # Fit model and store matrices
+        A = self.A
+        (b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy) = algo.dipals(x, y, xs, xt, A, l, heuristic=heuristic, laplacian=True)
+
+        self.b = b
+        self.T = T
+        self.Ts = Ts
+        self.Tt = Tt
+        self.W = W
+        self.P = P
+        self.Ps = Ps
+        self.Pt = Pt
+        self.E = E
+        self.Es = Es
+        self.Et = Et
+        self.Ey = Ey
+        self.C = C
+        self.discrepancy = discrepancy
 
 

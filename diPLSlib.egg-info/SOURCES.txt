@@ -2,8 +2,8 @@ LICENSE
 README.md
 setup.py
 diPLSlib/__init__.py
-diPLSlib/dipals.py
 diPLSlib/functions.py
+diPLSlib/models.py
 diPLSlib.egg-info/PKG-INFO
 diPLSlib.egg-info/SOURCES.txt
 diPLSlib.egg-info/dependency_links.txt

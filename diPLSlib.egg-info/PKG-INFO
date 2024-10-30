@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: diPLSlib
-Version: 1.0.2
+Version: 2.0.0
 Summary: Python package for domain adaptation in multivariate regression
 Home-page: https://github.com/B-Analytics/di-PLS
 Author: Ramin Nikzad-Langerodi

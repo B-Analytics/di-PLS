@@ -57,12 +57,12 @@ class model:
         
         Parameters
         ----------
-        l: float or numpy array (1 x A)
-            Regularization parameter. Either a single or different l's for each
+        l: list
+            Regularization parameter. Either a single or different l's for each LV
             can be passed
             
         centering: bool
-            If True Source and Target Domain Data are Mean Centered (default)
+            If set to True, Source and Target Domain Data are Mean Centered (default)
             
         heuristic: bool
             If True the regularization parameter is set to a heuristic value
@@ -202,4 +202,49 @@ class model:
         return yhat,error
 
 
+
+# Create a separate class for GCT-PLS model inheriting from class model
+class GCTPLS(model):
+    def __init__(self, x:np.ndarray, y:np.ndarray, xs:np.ndarray, xt:np.ndarray, A:int=2):
+        
+        model.__init__(self, x, y, xs, xt, A)
+
+        
+    def fit(self, l=0, centering=True, heuristic=False):
+        """
+        Fit GCT-PLS model.
+        
+        Parameters
+        ----------
+        l:  list
+            Regularization parameter. Either a single or different l's for each LV
+            can be passed
+
+        centering: bool
+            If set to True, Source and Target Domain Data are Mean Centered (default)
+            
+        heuristic: bool
+            If True the regularization parameter is set to a heuristic value
+
+        
+        """
+        
+        # Mean Centering
+        if centering is True:
+            
+            x = self.x[...,:] - self.mu
+            y = self.y - self.b0
+
+        else: 
+            
+            x = self.x
+            y = self.y
+
+
+        xs = self.xs
+        xt = self.xt
+            
+        # Fit model and store matrices
+        A = self.A
+        (b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy) = algo.gctpls(x, y, xs, xt, A, l, heuristic=heuristic, laplacian=True)
 

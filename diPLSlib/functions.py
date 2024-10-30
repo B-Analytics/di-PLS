@@ -17,10 +17,10 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
+def dipals(x, y, xs, xt, A, l, heuristic:bool=False, target_domain=0, laplacian:bool=False):
         '''
         (Multiple) Domain-invariant partial least squares regression ((m)di-PLS) performs PLS regression 
-        using labeled Source domain data x (=xs) and y and unlabeled Target domain data (xt_1,...,xt_k)
+        using labeled Source domain data x (=xs) and y, and unlabeled Target domain data (xt_1,...,xt_k)
         with the goal to fit an (invariant) model that generalizes over all domains.
 
 
@@ -37,9 +37,8 @@ def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
           Domain adaptation for regression under Beer–Lambert’s law, Knowledge-Based Systems, 
           2020 (210) DOI: 10.1016/j.knosys.2020.106447
 
-        (4) Bianca Mikulasek, Valeria Fonseca Diaz, David Gabauer, Christoph Herwig, Ramin Nikzad-Langerodi,
-          Partial least squares regression with multiple domains, J. Chemometrics, 2023 (to appear). 
-          doi: 10.13140/RG.2.2.23750.75845
+        (4) B. Mikulasek, V. Fonseca Diaz, D. Gabauer, C. Herwig, and R. Nikzad-Langerodi
+            "Partial least squares regression with multiple domains" Journal of Chemometrics 2023 37 (5), e3477
 
             
         Parameters
@@ -75,7 +74,10 @@ def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
             If multiple target domains are passed, target_domain specifies for which of the target domains
             the model should apply. If target_domain=0, the model applies to the source domain,
             if target_domain=1, the model applies to the first target domain etc.
-    
+
+        laplacian: bool
+            If True, the Laplacian matrix obtained by calling the transfer_laplacian function is used
+            to regularize the distance between matched calibration transfer samples in the LV space.
             
         Returns
         -------
@@ -189,7 +191,7 @@ def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
                     # Convex relaxation of covariance difference matrix
                     D = convex_relaxation(xs, xt)
 
-                # Multiple target domains
+                 # Multiple target domains
                  elif(type(xt) is list):
 
                     #print('Relaxing domains ... ')
@@ -200,6 +202,13 @@ def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
 
                         d = convex_relaxation(xs, xt[z])
                         D = D + d
+
+                 elif(laplacian is True):
+                    
+                    J = np.vstack([xs, xt])
+                    L = transfer_laplacian(xs, xt)
+                    D = J.T@L@J
+
 
                  else:
 
@@ -212,19 +221,16 @@ def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
                     opt_l[i] = gamma
                     lA = gamma
 
-                 else:
 
-                    # di-PLS
-                    # reg = (np.linalg.inv(I+lA/((y.T@y))*D))
-                    # w = w_pls@reg
-                    reg = I+lA/((y.T@y))*D
-                    w = scipy.linalg.solve(reg.T, w_pls.T, assume_a='sym').T  # 10 times faster than previous comptation of reg
+                 reg = I+lA/((y.T@y))*D
+                 w = scipy.linalg.solve(reg.T, w_pls.T, assume_a='sym').T  # 10 times faster than previous comptation of reg
 
                  # Normalize w
                  w = w/np.linalg.norm(w)
 
                  # Absolute difference between variance of source and target domain projections
                  discrepancy[i] = w@D@w.T
+
 
             else:        
 
@@ -281,7 +287,10 @@ def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
 
             # Deflate X and y (Gram-Schmidt orthogonalization)
             x = x - t@p
-            xs = xs - ts@ps
+
+            if laplacian is False:                       # Calibration transfer case
+                xs = xs - ts@ps
+            
             if(type(xt) is list):
 
                 for z in range(len(xt)):
@@ -292,7 +301,8 @@ def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
 
                 if(np.sum(xt) != 0):  # Deflate target matrix only if not zero
 
-                    xt = xt - tt@pt
+                    if laplacian is False:                       # Calibration transfer case
+                        xt = xt - tt@pt
 
 
             y = y - t*c
@@ -319,42 +329,29 @@ def dipals(x, y, xs, xt, A, l, heuristic=False, target_domain=0):
 
 
         # Calculate regression vector
-        if type(l) is np.ndarray and np.any(xt != 0):  # Check if multiple regularization
-                # parameters are passed (one for each LV)
+        if laplacian is True:                       # Calibration transfer case
 
-                b = W@(np.linalg.inv(Pt.T@W))@C
+            b = W@(np.linalg.inv(P.T@W))@C
 
-        elif(type(l) is int or type(l) is np.float64):
+        else:
 
-                if l==0:
-                    b = W@(np.linalg.inv(Ps.T@W))@C
+            if np.any([i != 0 for i in l]):         # Check if multiple regularization # parameters are passed (one for each LV)
 
-                elif np.any(xt != 0): 
+                if target_domain==0:                # Multiple target domains (Domain unknown)
+
+                    b = W@(np.linalg.inv(P.T@W))@C
+
+                elif type(xt) is np.ndarray:        # Single target domain
+
                     b = W@(np.linalg.inv(Pt.T@W))@C
 
-                else:
-                    b = W@(np.linalg.inv(Ps.T@W))@C
-
-        elif np.any(xt != 0):
-
-            if(type(xt) is list):
-    
-                if(target_domain==0):
-
-                    b = W@(np.linalg.inv(Ps.T@W))@C
-
-                else:
+                elif type(xt) is list:              # Multiple target domains (Domain known)
 
                     b = W@(np.linalg.inv(Pt[target_domain-1].T@W))@C
 
             else:
-
-                b = W@(np.linalg.inv(Pt.T@W))@C
-            
-
-        else:
-
-            b = W@(np.linalg.inv(Ps.T@W))@C
+    
+                    b = W@(np.linalg.inv(P.T@W))@C   
 
 
         # Store residuals
@@ -519,4 +516,36 @@ def rmse(y, yhat):
     '''  
 
     return np.sqrt(((y-yhat)**2).mean())
+
+
+def transfer_laplacian(x:np.ndarray, y:np.ndarray) -> np.ndarray:
+    """
+    Laplacian matrix for calibration transfer problems.
+
+    Laplacian matrix L = [[-1, 1];[1, -1]] x I, where I is the identity matrix, for dataset J = [xs;xt], where s.t. xs and xt
+    contain the matched calibration transfer standard samples.
+
+    See: Nikzad‐Langerodi, R., & Sobieczky, F. (2021). Graph‐based calibration transfer. Journal of Chemometrics, 35(4), e3319.   
+
+    Parameters
+    ----------
+    x: numpy array (N x K)
+        Calibration transfer samples device 1
+
+    y: numpy array (N x K)
+        Calibration transfer samples device 2
+
+
+    Returns:
+    --------
+    L: numpy array (2N x 2N)
+        Laplacian matrix
+
+    """
+
+    (n, p) = np.shape(x)
+    I = np.eye(n)
+    L = np.vstack([np.hstack([I,-I]),np.hstack([-I,I])])
+
+    return L
 
