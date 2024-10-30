@@ -1,0 +1,11 @@
+LICENSE
+README.md
+setup.py
+diPLSlib/__init__.py
+diPLSlib/dipals.py
+diPLSlib/functions.py
+diPLSlib.egg-info/PKG-INFO
+diPLSlib.egg-info/SOURCES.txt
+diPLSlib.egg-info/dependency_links.txt
+diPLSlib.egg-info/requires.txt
+diPLSlib.egg-info/top_level.txt

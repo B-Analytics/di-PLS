@@ -9,7 +9,7 @@ info@bottleneck-analytics.com
 # Modules
 import numpy as np
 import matplotlib.pyplot as plt
-from src import functions as algo
+from diPLSlib import functions as algo
 import scipy.stats
 
 
