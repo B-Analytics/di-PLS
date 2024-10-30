@@ -16,9 +16,9 @@ pip install diPLSlib
 ## How to apply di-PLS
 Train regression model
 ```python
-from diPLSlib import dipals as ml
+from diPLSlib.models import DIPLS as dipls
 
-m = ml.model(X, y, X_source, X_target, 2)
+m = dipls(X, y, X_source, X_target, 2)
 l = [100000] #  Regularization
 m.fit(l)
 
@@ -31,10 +31,10 @@ yhat_dipls, err = m.predict(X_test, y_test=[])
 
 ## How to apply mdi-PLS
 ```python
-from diPLSlib import dipals as ml
+from diPLSlib.models import DIPLS as dipls
 
 # Training
-m = ml.model(X, y, X_source, X_target, 2)
+m = dipls(X, y, X_source, X_target, 2)
 l = [100000] #  Regularization
 m.fit(l, target_domain=2)
 
@@ -46,7 +46,21 @@ yhat_dipls, err = m.predict(X_test, y_test=[])
 # The parameter target_domain specifies for which domain the model should be trained (here X2).
 ```
 
+## How to apply GCT-PLS
+```python
+from diPLSlib.models import GCTPLS as gctpls
 
+# Training
+m = gctpls(X, y, X_source, X_target, 2)
+l = [100] #  Regularization
+m.fit(l)
+
+# Testing
+yhat_gct, err = m.predict(X_test, y_test=[])
+
+
+# X_source and X_target hold the same samples measured in the source and target domain, respectively.
+```
 
 # Acknowledgements
 The first version of di-PLS was developed by Ramin Nikzad-Langerodi, Werner Zellinger, Edwin Lughofer, Bernhard Moser and Susanne Saminger-Platz
@@ -64,7 +78,7 @@ Domain adaptation for regression under Beer–Lambert’s law,
 Knowledge-Based Systems, Volume 210, 2020, https://doi.org/10.1016/j.knosys.2020.106447.*
 
 - *Bianca Mikulasek, Valeria Fonseca Diaz, David Gabauer, Christoph Herwig, Ramin Nikzad-Langerodi,
-Partial least squares regression with multiple domains, J. Chemometrics, 2023 (to appear), https://doi.org/10.13140/RG.2.2.23750.75845*
+ "Partial least squares regression with multiple domains" Journal of Chemometrics 2023 37 (5), e3477, https://doi.org/10.13140/RG.2.2.23750.75845*
 
 # Contact us
 Bottleneck Analytics GmbH  
