@@ -9,7 +9,7 @@ Python implementation of (m)di-PLS for domain adaptation in multivariate regress
 
 # Installation
 ```bash
-pip install .\dist\diplslib-1.0.0.tar.gz
+pip install diPLSlib
 ```
 
 # Usage 
