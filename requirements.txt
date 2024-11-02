@@ -5,4 +5,3 @@ setuptools==75.1.0
 numpydoc==1.8.0
 sphinx==8.1.3
 sphinx_rtd_theme==3.0.1
-diPLSlib==2.1.0
