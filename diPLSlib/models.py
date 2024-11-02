@@ -57,32 +57,54 @@ class DIPLS:
     mu_t : ndarray of shape (n_features,) or ndarray of shape (n_domains, n_features)
         Mean of columns in `xt`, averaged per target domain if multiple domains exist.
 
-    T : list
-        Projections (scores) of the data.
-
-    Ts : list
-        Source domain scores.
-
-    Tt : list
-        Target domain scores.
-
-    P : list
-        Loadings of the PLS components.
-
-    Ps : list
-        Source domain loadings.
-
-    Pt : list
-        Target domain loadings.
-
-    W : list
-        Weights of the PLS components.
-
-    opt_l : list
-        Optimal set of regularization parameters.
+    b : ndarray of shape (n_features, 1)
+        Regression coefficient vector.
 
     b0 : float
-        Intercept of the model.
+        Intercept of the regression model.
+
+    T : ndarray of shape (n_samples, A)
+        Training data projections (scores).
+
+    Ts : ndarray of shape (n_source_samples, A)
+        Source domain projections (scores).
+
+    Tt : ndarray of shape (n_target_samples, A)
+        Target domain projections (scores).
+
+    W : ndarray of shape (n_features, A)
+        Weight matrix.
+
+    P : ndarray of shape (n_features, A)
+        Loadings matrix corresponding to x.
+
+    Ps : ndarray of shape (n_features, A)
+        Loadings matrix corresponding to xs.
+
+    Pt : ndarray of shape (n_features, A)
+        Loadings matrix corresponding to xt.
+
+    E : ndarray of shape (n_source_samples, n_features)
+        Residuals of source domain data.
+
+    Es : ndarray of shape (n_source_samples, n_features)
+        Source domain residual matrix.
+
+    Et : ndarray of shape (n_target_samples, n_features)
+        Target domain residual matrix.
+
+    Ey : ndarray of shape (n_source_samples, 1)
+        Residuals of response variable in the source domain.
+
+    C : ndarray of shape (A, 1)
+        Regression vector relating source projections to the response variable.
+
+    opt_l : ndarray of shape (A, 1)
+        Heuristically determined regularization parameter for each latent variable.
+
+    discrepancy : ndarray
+        The variance discrepancy between source and target domain projections.
+
 
     References
     ----------
@@ -128,20 +150,8 @@ class DIPLS:
             self.mu_t = mu_t
         else:
             self.mu_t = np.mean(xt, 0)     # Single Target Domain  
-        self.T = []                        # Projections (scores)
-        self.Ts = []                       # Source domain scores
-        self.Tt = []                       # Target domain scores
-        self.P = []                        # Loadings
-        self.Ps = []                       # Source domain loadings
-        self.Pt = []                       # Target domain loadings
-        self.W = []                        # Weights
-        self.A = A                         # Number of LVs in the model
-        self.opt_l = []                    # Optimal set of regularization parameters 
-        self.b0 = np.mean(y,0)             # Offset
-        self.b = []                        # Regression coefficients
-        self.yhat= []                      # Predicted response values
-        self.rmsec = []                    # Root Mean Squared Error of Calibration
-        self.C = []                        # Inner relationship coefficients such that y = c*T
+        self.b0 = np.mean(y,0)             # Offset of the response variable
+        self.A  = A                        # Number of latent variables
 
 
     def fit(self, l=0, centering=True, heuristic=False, target_domain=0):
@@ -362,32 +372,54 @@ class GCTPLS(DIPLS):
     mu_t : ndarray of shape (n_features,) or ndarray of shape (n_domains, n_features)
         Mean of columns in `xt`, averaged per target domain if multiple domains exist.
 
-    T : list
-        Projections (scores) of the data.
-
-    Ts : list
-        Source domain scores.
-
-    Tt : list
-        Target domain scores.
-
-    P : list
-        Loadings of the PLS components.
-
-    Ps : list
-        Source domain loadings.
-
-    Pt : list
-        Target domain loadings.
-
-    W : list
-        Weights of the PLS components.
-
-    opt_l : list
-        Optimal set of regularization parameters.
+    b : ndarray of shape (n_features, 1)
+        Regression coefficient vector.
 
     b0 : float
-        Intercept of the model.
+        Intercept of the regression model.
+
+    T : ndarray of shape (n_samples, A)
+        Training data projections (scores).
+
+    Ts : ndarray of shape (n_source_samples, A)
+        Source domain projections (scores).
+
+    Tt : ndarray of shape (n_target_samples, A)
+        Target domain projections (scores).
+
+    W : ndarray of shape (n_features, A)
+        Weight matrix.
+
+    P : ndarray of shape (n_features, A)
+        Loadings matrix corresponding to x.
+
+    Ps : ndarray of shape (n_features, A)
+        Loadings matrix corresponding to xs.
+
+    Pt : ndarray of shape (n_features, A)
+        Loadings matrix corresponding to xt.
+
+    E : ndarray of shape (n_source_samples, n_features)
+        Residuals of source domain data.
+
+    Es : ndarray of shape (n_source_samples, n_features)
+        Source domain residual matrix.
+
+    Et : ndarray of shape (n_target_samples, n_features)
+        Target domain residual matrix.
+
+    Ey : ndarray of shape (n_source_samples, 1)
+        Residuals of response variable in the source domain.
+
+    C : ndarray of shape (A, 1)
+        Regression vector relating source projections to the response variable.
+
+    opt_l : ndarray of shape (A, 1)
+        Heuristically determined regularization parameter for each latent variable.
+
+    discrepancy : ndarray
+        The variance discrepancy between source and target domain projections.
+
 
     References
     ----------
@@ -476,5 +508,9 @@ class GCTPLS(DIPLS):
         self.Ey = Ey
         self.C = C
         self.discrepancy = discrepancy
+
+        if heuristic is True:
+
+            self.opt_l = opt_l
 
 

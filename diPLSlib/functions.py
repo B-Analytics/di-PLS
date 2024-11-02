@@ -74,7 +74,13 @@ def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplaci
         Weight matrix.
 
     P : ndarray of shape (n_features, A)
-        Loadings matrix.
+        Loadings matrix corresponding to x.
+
+    Ps : ndarray of shape (n_features, A)
+        Loadings matrix corresponding to xs.
+
+    Pt : ndarray of shape (n_features, A)
+        Loadings matrix corresponding to xt.
 
     E : ndarray of shape (n_source_samples, n_features)
         Residuals of source domain data.
