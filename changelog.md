@@ -61,6 +61,22 @@ All notable changes to this project will be documented in this file.
 
 [2.0.0]: https://github.com/B-Analytics/di-PLS/releases/tag/v2.0.0
 
+## [2.1.0] - 2024-11-02
+### Added
+- utils submodule added to outsource utility functions.
+- Documentation added
+
+### Changed
+- N/A
+
+### Fixed
+- N/A
+
+### Removed
+- N/A
+
+[2.1.0]: https://github.com/B-Analytics/di-PLS/releases/tag/v2.1.0
+
 
 
 
