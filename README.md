@@ -62,6 +62,9 @@ yhat_gct, err = m.predict(X_test, y_test=[])
 # X_source and X_target hold the same samples measured in the source and target domain, respectively.
 ```
 
+# Documentation
+The documentation can be found [here](https://di-pls.readthedocs.io/en/latest/diPLSlib.html).
+
 # Acknowledgements
 The first version of di-PLS was developed by Ramin Nikzad-Langerodi, Werner Zellinger, Edwin Lughofer, Bernhard Moser and Susanne Saminger-Platz
 and published in:
