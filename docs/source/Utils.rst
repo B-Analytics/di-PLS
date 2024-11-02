@@ -1,16 +1,18 @@
-diPLSlib.utils
-==============
+Utils
+=====
 
-
-.. automodule:: diPLSlib.utils.misc
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
 
 .. automodule:: diPLSlib.utils
    :members:
    :undoc-members:
    :show-inheritance:
+
+miscellaneous
+-------------
+
+.. automodule:: diPLSlib.utils.misc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+

@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'diPLSlib Documentation'
 copyright = '2024, Ramin Nikzad-Langerodi'
 author = 'Ramin Nikzad-Langerodi'
-release = '2.0.0'
+release = '2.1.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -23,7 +23,8 @@ release = '2.0.0'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
-    'numpydoc'
+    'numpydoc',
+    'sphinx_rtd_theme'
     # 'sphinx.ext.napoleon'
 ]
 
@@ -38,10 +39,7 @@ autodoc_default_options = {
     'member-order': 'bysource',
     'undoc-members': True,
     'show-inheritance': True,
-    'special-members': '__init__',
-    'exclude-members': '__weakref__',
-    'ignore-module-all': True,
-    'no-value': True
+    'special-members': '__init__'
 }
 
 # -- Options for HTML output -------------------------------------------------
