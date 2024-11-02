@@ -31,10 +31,10 @@ yhat_dipls, err = m.predict(X_test, y_test=[])
 
 ## How to apply mdi-PLS
 ```python
-from diPLSlib.models import DIPLS as dipls
+from diPLSlib.models import DIPLS
 
 # Training
-m = dipls(X, y, X_source, X_target, 2)
+m = DIPLS(X, y, X_source, X_target, 2)
 l = [100000] #  Regularization
 m.fit(l, target_domain=2)
 
@@ -48,10 +48,10 @@ yhat_dipls, err = m.predict(X_test, y_test=[])
 
 ## How to apply GCT-PLS
 ```python
-from diPLSlib.models import GCTPLS as gctpls
+from diPLSlib.models import GCTPLS
 
 # Training
-m = gctpls(X, y, X_source, X_target, 2)
+m = GCTPLS(X, y, X_source, X_target, 2)
 l = [100] #  Regularization
 m.fit(l)
 
