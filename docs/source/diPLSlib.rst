@@ -1,28 +1,23 @@
-diPLSlib package
-================
-
-diPLSlib.models
----------------
-
-.. automodule:: diPLSlib.models
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-diPLSlib.functions
-------------------
-
-.. automodule:: diPLSlib.functions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-Module contents
----------------
+diPLSlib
+========
 
 .. automodule:: diPLSlib
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Models
+------
+
+.. automodule:: diPLSlib.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Functions
+---------
+
+.. automodule:: diPLSlib.functions
+    :members:
+    :undoc-members:
+    :show-inheritance:

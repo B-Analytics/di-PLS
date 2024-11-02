@@ -9,3 +9,5 @@ diPLSlib.egg-info/SOURCES.txt
 diPLSlib.egg-info/dependency_links.txt
 diPLSlib.egg-info/requires.txt
 diPLSlib.egg-info/top_level.txt
+diPLSlib/utils/__init__.py
+diPLSlib/utils/misc.py

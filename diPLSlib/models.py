@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
+'''
+diPLSlib model classes
+
+- DIPLS base class
+- GCTPLS class
+'''
+
 # Modules
 import numpy as np
 import matplotlib.pyplot as plt
 from diPLSlib import functions as algo
+from diPLSlib.utils import misc as helpers
 import scipy.stats
 
 
@@ -24,10 +32,10 @@ class DIPLS:
         Response variable corresponding to the input data `x`.
 
     xs : ndarray of shape (n_samples_source, n_features)
-        Source domain feature data.
+        Source domain X-data.
 
     xt : Union[ndarray of shape (n_samples_target, n_features), List[ndarray]]
-        Target domain feature data. Can be a single target domain or a list of arrays 
+        Target domain X-data. Can be a single target domain or a list of arrays 
         representing multiple target domains.
 
     A : int
@@ -246,7 +254,7 @@ class DIPLS:
             
     def predict(self, x_test, y_test=[], rescale='Target'):
         """
-        Predict responses using the fitted DIPLS model.
+        Predict y using the fitted DIPLS model.
 
         This method predicts the response variable for the provided test data using
         the fitted domain-invariant partial least squares (di-PLS) model. It can handle
@@ -315,7 +323,7 @@ class DIPLS:
         
         yhat = Xtest@self.b + self.b0
 
-        error = algo.rmse(yhat,y_test)
+        error = helpers.rmse(yhat,y_test)
 
 
         return yhat,error
@@ -340,10 +348,10 @@ class GCTPLS(DIPLS):
         Response variable corresponding to the input data `x`.
 
     xs : ndarray of shape (n_sample_pairs, n_features)
-        Source domain feature data.
+        Source domain X-data.
 
     xt : ndarray of shape (n_sample_pairs, n_features)
-        Target domain feature data. 
+        Target domain X-data. 
 
     A : int
         Number of latent variables to be used in the model.
