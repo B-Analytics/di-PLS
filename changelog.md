@@ -77,7 +77,7 @@ All notable changes to this project will be documented in this file.
 
 [2.1.0]: https://github.com/B-Analytics/di-PLS/releases/tag/v2.1.0
 
-## [2.2.1] - 2024-11-02
+## [2.2.0] - 2024-11-02
 
 ### Added
 - Unittests for models, functions and utils

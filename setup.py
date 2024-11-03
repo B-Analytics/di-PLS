@@ -22,6 +22,7 @@ setuptools.setup(
     install_requires=[
         'numpy',
         'matplotlib',
-        'scipy'
+        'scipy',
+        'scikit-learn',
     ]
 )
