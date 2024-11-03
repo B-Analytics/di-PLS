@@ -7,6 +7,7 @@ diPLSlib model classes
 '''
 
 # Modules
+from sklearn.base import BaseEstimator, RegressorMixin
 import numpy as np
 import matplotlib.pyplot as plt
 from diPLSlib import functions as algo
@@ -14,7 +15,7 @@ from diPLSlib.utils import misc as helpers
 import scipy.stats
 
 
-class DIPLS:
+class DIPLS(RegressorMixin, BaseEstimator):
     """
     Domain-Invariant Partial Least Squares (DIPLS) algorithm for domain adaptation.
 
@@ -25,21 +26,30 @@ class DIPLS:
     Parameters
     ----------
 
-    x : ndarray of shape (n_samples, n_features)
-        Labeled input data from the source domain.
-
-    y : ndarray of shape (n_samples, 1)
-        Response variable corresponding to the input data `x`.
-
-    xs : ndarray of shape (n_samples_source, n_features)
-        Source domain X-data.
-
-    xt : Union[ndarray of shape (n_samples_target, n_features), List[ndarray]]
-        Target domain X-data. Can be a single target domain or a list of arrays 
-        representing multiple target domains.
-
     A : int
         Number of latent variables to be used in the model.
+
+    l : Union[int, List[int]], default=0
+        Regularization parameter. Either a single value or a list of different
+        values for each latent variable (LV).
+
+    centering : bool, default=True
+            If True, source and target domain data are mean-centered.
+
+    heuristic : bool, default=False
+        If True, the regularization parameter is set to a heuristic value that
+        balances fitting the output variable y and minimizing domain discrepancy.
+
+    target_domain : int, default=0
+        If multiple target domains are passed, target_domain specifies
+        for which of the target domains the model should apply. 
+        If target_domain=0, the model applies to the source domain,
+        if target_domain=1, it applies to the first target domain, and so on.
+
+    rescale : Union[str, ndarray], default='Target'
+            Determines rescaling of the test data. If 'Target' or 'Source', the test data will be
+            rescaled to the mean of xt or xs, respectively. If an ndarray is provided, the test data
+            will be rescaled to the mean of the provided array.
 
     Attributes
     ----------
@@ -56,61 +66,61 @@ class DIPLS:
     k : int
         Number of features (variables) in `x`.
 
-    mu : ndarray of shape (n_features,)
+    mu_ : ndarray of shape (n_features,)
         Mean of columns in `x`.
 
-    mu_s : ndarray of shape (n_features,)
+    mu_s_ : ndarray of shape (n_features,)
         Mean of columns in `xs`.
 
-    mu_t : ndarray of shape (n_features,) or ndarray of shape (n_domains, n_features)
+    mu_t_ : ndarray of shape (n_features,) or ndarray of shape (n_domains, n_features)
         Mean of columns in `xt`, averaged per target domain if multiple domains exist.
 
-    b : ndarray of shape (n_features, 1)
+    b_ : ndarray of shape (n_features, 1)
         Regression coefficient vector.
 
-    b0 : float
+    b0_ : float
         Intercept of the regression model.
 
-    T : ndarray of shape (n_samples, A)
+    T_ : ndarray of shape (n_samples, A)
         Training data projections (scores).
 
-    Ts : ndarray of shape (n_source_samples, A)
+    Ts_ : ndarray of shape (n_source_samples, A)
         Source domain projections (scores).
 
-    Tt : ndarray of shape (n_target_samples, A)
+    Tt_ : ndarray of shape (n_target_samples, A)
         Target domain projections (scores).
 
-    W : ndarray of shape (n_features, A)
+    W_ : ndarray of shape (n_features, A)
         Weight matrix.
 
-    P : ndarray of shape (n_features, A)
+    P_ : ndarray of shape (n_features, A)
         Loadings matrix corresponding to x.
 
-    Ps : ndarray of shape (n_features, A)
+    Ps_ : ndarray of shape (n_features, A)
         Loadings matrix corresponding to xs.
 
-    Pt : ndarray of shape (n_features, A)
+    Pt_ : ndarray of shape (n_features, A)
         Loadings matrix corresponding to xt.
 
-    E : ndarray of shape (n_source_samples, n_features)
+    E_ : ndarray of shape (n_source_samples, n_features)
         Residuals of source domain data.
 
-    Es : ndarray of shape (n_source_samples, n_features)
+    Es_ : ndarray of shape (n_source_samples, n_features)
         Source domain residual matrix.
 
-    Et : ndarray of shape (n_target_samples, n_features)
+    Et_ : ndarray of shape (n_target_samples, n_features)
         Target domain residual matrix.
 
-    Ey : ndarray of shape (n_source_samples, 1)
+    Ey_ : ndarray of shape (n_source_samples, 1)
         Residuals of response variable in the source domain.
 
-    C : ndarray of shape (A, 1)
+    C_ : ndarray of shape (A, 1)
         Regression vector relating source projections to the response variable.
 
-    opt_l : ndarray of shape (A, 1)
+    opt_l_ : ndarray of shape (A, 1)
         Heuristically determined regularization parameter for each latent variable.
 
-    discrepancy : ndarray
+    discrepancy_ : ndarray
         The variance discrepancy between source and target domain projections.
 
 
@@ -131,38 +141,24 @@ class DIPLS:
     >>> y = np.random.rand(100,1)
     >>> xs = np.random.rand(100, 10)
     >>> xt = np.random.rand(50, 10)
-    >>> x_test = np.random.rand(10, 10)
+    >>> X = np.random.rand(10, 10)
     >>> model = DIPLS(x, y, xs, xt, A=5)
     >>> model.fit(l=[0.1], centering=True, heuristic=False)
-    >>> yhat, _ = model.predict(x_test, y_test=[], rescale='Target')
+    >>> yhat, _ = model.predict(X, y_test=[], rescale='Target')
     >>> print(yhat)
     """
 
-    def __init__(self, x, y, xs, xt, A):
-        self.x = x                         # Labeled X-Data (usually x = xs)
-        self.n = np.shape(x)[0]            # Number of X samples
-        self.ns = np.shape(xs)[0]          # Number of Xs samples
-        self.nt = np.shape(xt)[0]          # Number of Xs samples
-        self.k = np.shape(x)[1]            # Number of X variables
-        self.y = y                         # Response variable corresponding to X data
-        self.xs = xs                       # Source domain X data
-        self.xt = xt                       # Target domain X data
-        self.mu = np.mean(x, 0)            # Column means of x
-        self.mu_s = np.mean(xs, 0)         # Column means of xs
-        if(type(self.xt) is list):         # Column Means of xt
-            self.ndomains = len(self.xt)   # Multiple Target Domains
-            mu_t = np.zeros([self.ndomains, self.k])
-
-            for i in range(self.ndomains):
-                mu_t[i, :] = np.mean(self.xt[i], 0)
-            self.mu_t = mu_t
-        else:
-            self.mu_t = np.mean(xt, 0)     # Single Target Domain  
-        self.b0 = np.mean(y,0)             # Offset of the response variable
-        self.A  = A                        # Number of latent variables
+    def __init__(self, A=2, l=[0], centering=True, heuristic=False, target_domain=0, rescale='Target'):
+        # Model parameters
+        self.A = A
+        self.l = l
+        self.centering = centering
+        self.heuristic = heuristic
+        self.target_domain = target_domain
+        self.rescale = rescale
 
 
-    def fit(self, l=0, centering=True, heuristic=False, target_domain=0):
+    def fit(self, X, y, xs, xt):
         """
         Fit the DIPLS model.
 
@@ -172,23 +168,19 @@ class DIPLS:
 
         Parameters
         ----------
+        X : ndarray of shape (n_samples, n_features)
+            Labeled input data from the source domain.
 
-        l : Union[int, List[int]], default=0
-            Regularization parameter. Either a single value or a list of different
-            values for each latent variable (LV).
+        y : ndarray of shape (n_samples, 1)
+            Response variable corresponding to the input data `x`.
 
-        centering : bool, default=True
-            If True, source and target domain data are mean-centered.
+        xs : ndarray of shape (n_samples_source, n_features)
+            Source domain X-data.
 
-        heuristic : bool, default=False
-            If True, the regularization parameter is set to a heuristic value that
-            balances fitting the output variable y and minimizing domain discrepancy.
+        xt : Union[ndarray of shape (n_samples_target, n_features), List[ndarray]]
+            Target domain X-data. Can be a single target domain or a list of arrays 
+            representing multiple target domains.
 
-        target_domain : int, default=0
-            If multiple target domains are passed, target_domain specifies
-            for which of the target domains the model should apply. 
-            If target_domain=0, the model applies to the source domain,
-            if target_domain=1, it applies to the first target domain, and so on.
 
         Returns
         -------
@@ -196,84 +188,61 @@ class DIPLS:
         None
         """
         
-           
-        # Mean Centering
-        b0 = np.mean(self.y)
-        y = self.y - b0
+        self.x = X
+        self.y = y
+        self.xs = xs
+        self.xt = xt
+        self.b0_ = np.mean(self.y)
 
+        # Mean centering
+        if self.centering:
 
-        if centering is True:
-
-            x = self.x[..., :] - self.mu   
-            xs = self.xs[..., :] - self.mu_s
-
+            self.mu_ = np.mean(self.x, axis=0)
+            self.mu_s_ = np.mean(self.xs, axis=0)
+            self.x = self.x - self.mu_
+            self.xs = self.xs - self.mu_s_
+            y = self.y - self.b0_
 
             # Mutliple target domains
-            if(type(self.xt) is list):
+            if isinstance(self.xt, list):
 
-                xt = [self.xt[i][..., :] - self.mu_t[i, :] for i in range(self.ndomains)]
-
+                self.mu_t_ = [np.mean(x, axis=0) for x in self.xt]
+                self.xt = [x - mu for x, mu in zip(self.xt, self.mu_t_)]
+            
             else:
 
-                xt = self.xt[..., :] - self.mu_t
-
+                self.mu_t_ = np.mean(self.xt, axis=0)
+                self.xt = self.xt - self.mu_t_
 
         else:
 
-            x = self.x 
-            xs = self.xs
-            xt = self.xt
+            y = self.y
+        
+
+        x = self.x 
+        xs = self.xs
+        xt = self.xt
 
     
-        # Fit model and store matrices
-        A = self.A
-        (b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy) = algo.dipals(x, y, xs, xt, A, l, heuristic=heuristic, target_domain=target_domain)
-             
-        self.b = b
-        self.b0 = b0
-        self.T = T
-        self.Ts = Ts
-        self.Tt = Tt
-        self.W = W
-        self.P = P
-        self.Ps = Ps
-        self.Pt = Pt
-        self.E = E
-        self.Es = Es
-        self.Et = Et
-        self.Ey = Ey
-        self.C = C
-        self.discrepancy = discrepancy
-        self.target_domain = target_domain
+        # Fit model
+        results = algo.dipals(x, y, xs, xt, self.A, self.l, heuristic=self.heuristic, target_domain=self.target_domain)
+        self.b_, self.T_, self.Ts_, self.Tt_, self.W_, self.P_, self.Ps_, self.Pt_, self.E_, self.Es_, self.Et_, self.Ey_, self.C_, self.opt_l_, self.discrepancy_ = results
         
-        
-        if heuristic is True:
-
-            self.opt_l = opt_l
+        return self
 
             
-    def predict(self, x_test, y_test=[], rescale='Target'):
+    def predict(self, X):
         """
         Predict y using the fitted DIPLS model.
 
         This method predicts the response variable for the provided test data using
-        the fitted domain-invariant partial least squares (di-PLS) model. It can handle
-        rescaling of the test data to match the target domain training set or a provided array.
+        the fitted domain-invariant partial least squares (di-PLS) model.
 
         Parameters
         ----------
 
-        x_test : ndarray of shape (n_samples_test, n_features)
+        X : ndarray of shape (n_samples_test, n_features)
             Test data matrix to perform the prediction on.
-
-        y_test : ndarray of shape (n_samples_test,), optional
-            True response values for the test data. It can be used to evaluate
-            the prediction accuracy (default is an empty list).
-
-        rescale : Union[str, ndarray], default='Target'
-            Determines rescaling of the test data. If 'Target', the test data will be
-            rescaled to the mean of the target domain training set. If an ndarray is provided,
-            the test data will be rescaled to the mean of the provided array.
 
         Returns
         -------
@@ -281,52 +250,48 @@ class DIPLS:
         yhat : ndarray of shape (n_samples_test,)
             Predicted response values for the test data.
 
-        RMSE : float
-            Root Mean Squared Error of the predictions if `y_test` is provided.
         """
         
         # Rescale Test data 
-        if(type(rescale) is str):
+        if(type(self.rescale) is str):
 
-            if(rescale == 'Target'):
+            if(self.rescale == 'Target'):
 
                 if(type(self.xt) is list):
 
                     if(self.target_domain==0):
 
-                        Xtest = x_test[...,:] - self.mu_s
+                        Xtest = X[...,:] - self.mu_s_
 
                     else:
 
-                        Xtest = x_test[...,:] - self.mu_t[self.target_domain-1, :]
+                        Xtest = X[...,:] - self.mu_t_[self.target_domain-1]
 
                 else:
 
-                    Xtest = x_test[...,:] - self.mu_t
+                    Xtest = X[...,:] - self.mu_t_
 
-            elif(rescale == 'Source'):
+            elif(self.rescale == 'Source'):
 
-                Xtest = x_test[...,:] - self.mu_s
+                Xtest = X[...,:] - self.mu_s_
 
-            elif(rescale == 'none'):
+            elif(self.rescale == 'none'):
 
-                Xtest = x_test
+                Xtest = X
 
-        elif(type(rescale) is np.ndarray):
+        elif(type(self.rescale) is np.ndarray):
 
-             Xtest = x_test[...,:] - np.mean(rescale,0)
+             Xtest = X[...,:] - np.mean(self.rescale,0)
 
         else: 
 
             raise Exception('rescale must either be Source, Target or a Dataset')
             
         
-        yhat = Xtest@self.b + self.b0
-
-        error = helpers.rmse(yhat,y_test)
+        yhat = Xtest@self.b_ + self.b0_
 
 
-        return yhat,error
+        return yhat
 
 
 
@@ -445,8 +410,8 @@ class GCTPLS(DIPLS):
     >>> xt = np.random.rand(80, 10)
     >>> model = GCTPLS(x, y, xs, xt, 3)
     >>> model.fit(l=[100])
-    >>> x_test = np.random.rand(20, 10)
-    >>> y_pred, _ = model.predict(x_test)
+    >>> X = np.random.rand(20, 10)
+    >>> y_pred, _ = model.predict(X)
     >>> print(y_pred)
     """
 
