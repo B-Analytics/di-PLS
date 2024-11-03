@@ -226,7 +226,7 @@ def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplaci
                 w = w/np.linalg.norm(w)
 
                 # Absolute difference between variance of source and target domain projections
-                discrepancy[i] = w@D@w.T
+                discrepancy[i] = (w @ D @ w.T).item()
 
 
         else:        
@@ -241,7 +241,7 @@ def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplaci
 
             
             w = w_pls/np.linalg.norm(w_pls)
-            discrepancy[i] = w@D@w.T
+            discrepancy[i] = (w @ D @ w.T).item()
 
     
         # Compute scores
@@ -396,7 +396,6 @@ def convex_relaxation(xs, xt):
     >>> xs = np.random.random((100, 10))
     >>> xt = np.random.random((100, 10))
     >>> D = convex_relaxation(xs, xt)
-    >>> print(D)
     """
     
     # Preliminaries
@@ -450,6 +449,10 @@ def transfer_laplacian(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     >>> y = np.array([[2, 3], [4, 5]])
     >>> L = transfer_laplacian(x, y)
     >>> print(L)
+    [[ 1.  0. -1. -0.]
+     [ 0.  1. -0. -1.]
+     [-1. -0.  1.  0.]
+     [-0. -1.  0.  1.]]
     """
 
     (n, p) = np.shape(x)

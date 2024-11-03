@@ -16,31 +16,28 @@ pip install diPLSlib
 ## How to apply di-PLS
 Train regression model
 ```python
-from diPLSlib.models import DIPLS as dipls
+from diPLSlib.models import DIPLS
+from diPLSlib.utils import misc
 
-m = dipls(X, y, X_source, X_target, 2)
 l = [100000] #  Regularization
-m.fit(l)
+m = DIPLS(A=2, l=l)
+m.fit(X, y, X_source, X_target)
 
 # Typically X=X_source and y are the corresponding response values
 ```
 Apply the model 
 ```python
-yhat_dipls, err = m.predict(X_test, y_test=[])
+yhat_dipls = m.predict(X_test)
+err = misc.rmse(y_test, yhat_dipls)
 ```
 
 ## How to apply mdi-PLS
 ```python
 from diPLSlib.models import DIPLS
 
-# Training
-m = DIPLS(X, y, X_source, X_target, 2)
 l = [100000] #  Regularization
-m.fit(l, target_domain=2)
-
-# Testing
-yhat_dipls, err = m.predict(X_test, y_test=[])
-
+m = DIPLS(A=2, l=l, target_domain=2)
+m.fit(X, y, X_source, X_target)
 
 # X_target = [X1, X2, ... , Xk] is a list of target domain data
 # The parameter target_domain specifies for which domain the model should be trained (here X2).
@@ -51,13 +48,9 @@ yhat_dipls, err = m.predict(X_test, y_test=[])
 from diPLSlib.models import GCTPLS
 
 # Training
-m = GCTPLS(X, y, X_source, X_target, 2)
-l = [100] #  Regularization
-m.fit(l)
-
-# Testing
-yhat_gct, err = m.predict(X_test, y_test=[])
-
+l = [10] #  Regularization
+m = GCTPLS(A=2, l=l)
+m.fit(X, y, X_source, X_target)
 
 # X_source and X_target hold the same samples measured in the source and target domain, respectively.
 ```
