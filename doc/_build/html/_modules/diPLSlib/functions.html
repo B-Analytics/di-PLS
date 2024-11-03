@@ -1,0 +1,573 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>diPLSlib.functions &mdash; diPLSlib 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            diPLSlib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../diPLSlib.html">diPLSlib package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">diPLSlib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">diPLSlib.functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for diPLSlib.functions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Modules</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">eigh</span>
+<span class="kn">import</span> <span class="nn">scipy.spatial.distance</span> <span class="k">as</span> <span class="nn">scd</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">distance_matrix</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="dipals">
+<a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.functions.dipals">[docs]</a>
+<span class="k">def</span> <span class="nf">dipals</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">heuristic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">target_domain</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">laplacian</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform (Multiple) Domain-Invariant Partial Least Squares (di-PLS) regression.</span>
+
+<span class="sd">    This method fits a PLS regression model using labeled source domain data and potentially </span>
+<span class="sd">    unlabeled target domain data across multiple domains, aiming to build a model that </span>
+<span class="sd">    generalizes well across different domains.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    x : ndarray of shape (n_samples, n_features)</span>
+<span class="sd">        Labeled source domain data.</span>
+
+<span class="sd">    y : ndarray of shape (n_samples, 1)</span>
+<span class="sd">        Response variable associated with the source domain.</span>
+
+<span class="sd">    xs : ndarray of shape (n_source_samples, n_features)</span>
+<span class="sd">        Source domain feature data.</span>
+
+<span class="sd">    xt : ndarray of shape (n_target_samples, n_features) or list of ndarray</span>
+<span class="sd">        Target domain feature data. Multiple domains can be provided as a list.</span>
+
+<span class="sd">    A : int</span>
+<span class="sd">        Number of latent variables to use in the model.</span>
+
+<span class="sd">    l : Union[int, ndarray]</span>
+<span class="sd">        Regularization parameter, which can either be a single float value or an array specifying </span>
+<span class="sd">        a different value for each latent variable.</span>
+
+<span class="sd">    heuristic : bool, default=False</span>
+<span class="sd">        If True, automatically determine the regularization parameter to equally balance fitting </span>
+<span class="sd">        to Y and minimizing domain discrepancy.</span>
+
+<span class="sd">    target_domain : int, default=0</span>
+<span class="sd">        Specifies which target domain the model should apply to, where 0 indicates the source domain.</span>
+
+<span class="sd">    laplacian : bool, default=False</span>
+<span class="sd">        If True, uses a Laplacian matrix to regularize distances between matched calibration transfer </span>
+<span class="sd">        samples in latent variable space.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    b : ndarray of shape (n_features, 1)</span>
+<span class="sd">        Regression coefficient vector.</span>
+
+<span class="sd">    b0 : float</span>
+<span class="sd">        Intercept of the regression model.</span>
+
+<span class="sd">    T : ndarray of shape (n_samples, A)</span>
+<span class="sd">        Training data projections (scores).</span>
+
+<span class="sd">    Ts : ndarray of shape (n_source_samples, A)</span>
+<span class="sd">        Source domain projections (scores).</span>
+
+<span class="sd">    Tt : ndarray of shape (n_target_samples, A)</span>
+<span class="sd">        Target domain projections (scores).</span>
+
+<span class="sd">    W : ndarray of shape (n_features, A)</span>
+<span class="sd">        Weight matrix.</span>
+
+<span class="sd">    P : ndarray of shape (n_features, A)</span>
+<span class="sd">        Loadings matrix corresponding to x.</span>
+
+<span class="sd">    Ps : ndarray of shape (n_features, A)</span>
+<span class="sd">        Loadings matrix corresponding to xs.</span>
+
+<span class="sd">    Pt : ndarray of shape (n_features, A)</span>
+<span class="sd">        Loadings matrix corresponding to xt.</span>
+
+<span class="sd">    E : ndarray of shape (n_source_samples, n_features)</span>
+<span class="sd">        Residuals of source domain data.</span>
+
+<span class="sd">    Es : ndarray of shape (n_source_samples, n_features)</span>
+<span class="sd">        Source domain residual matrix.</span>
+
+<span class="sd">    Et : ndarray of shape (n_target_samples, n_features)</span>
+<span class="sd">        Target domain residual matrix.</span>
+
+<span class="sd">    Ey : ndarray of shape (n_source_samples, 1)</span>
+<span class="sd">        Residuals of response variable in the source domain.</span>
+
+<span class="sd">    C : ndarray of shape (A, 1)</span>
+<span class="sd">        Regression vector relating source projections to the response variable.</span>
+
+<span class="sd">    opt_l : ndarray of shape (A, 1)</span>
+<span class="sd">        Heuristically determined regularization parameter for each latent variable.</span>
+
+<span class="sd">    discrepancy : ndarray</span>
+<span class="sd">        The variance discrepancy between source and target domain projections.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    1. Ramin Nikzad-Langerodi et al., &quot;Domain-Invariant Partial Least Squares Regression&quot;, Analytical Chemistry, 2018.</span>
+<span class="sd">    2. Ramin Nikzad-Langerodi et al., &quot;Domain-Invariant Regression under Beer-Lambert&#39;s Law&quot;, Proc. ICMLA, 2019.</span>
+<span class="sd">    3. Ramin Nikzad-Langerodi et al., Domain adaptation for regression under Beer–Lambert’s law, Knowledge-Based Systems, 2020.</span>
+<span class="sd">    4. B. Mikulasek et al., &quot;Partial least squares regression with multiple domains&quot;, Journal of Chemometrics, 2023.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.functions import dipals</span>
+<span class="sd">    &gt;&gt;&gt; x = np.random.random((100, 10))</span>
+<span class="sd">    &gt;&gt;&gt; y = np.random.random((100, 1))</span>
+<span class="sd">    &gt;&gt;&gt; xs = np.random.random((50, 10))</span>
+<span class="sd">    &gt;&gt;&gt; xt = np.random.random((50, 10))</span>
+<span class="sd">    &gt;&gt;&gt; b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy = dipals(x, y, xs, xt, 2, [0.1])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get array dimensions</span>
+    <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+    
+    <span class="c1"># Initialize matrices</span>
+    <span class="n">Xt</span> <span class="o">=</span> <span class="n">xt</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">Pt</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">Tt</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xt</span><span class="p">)):</span>
+
+                <span class="n">Tti</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xt</span><span class="p">[</span><span class="n">z</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span> <span class="n">A</span><span class="p">])</span>
+                <span class="n">Pti</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="n">A</span><span class="p">])</span>
+
+                <span class="n">Pt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Pti</span><span class="p">)</span>
+                <span class="n">Tt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Tti</span><span class="p">)</span>
+
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span>
+        <span class="n">Tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">nt</span><span class="p">,</span> <span class="n">A</span><span class="p">])</span>
+        <span class="n">Pt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="n">A</span><span class="p">])</span>
+
+
+    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">A</span><span class="p">])</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="n">A</span><span class="p">])</span>
+    <span class="n">Ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">ns</span><span class="p">,</span> <span class="n">A</span><span class="p">])</span>
+    <span class="n">Ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="n">A</span><span class="p">])</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="n">A</span><span class="p">])</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">opt_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">discrepancy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="c1"># Compute LVs</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>  <span class="c1"># Separate regularization params for each LV</span>
+
+            <span class="n">lA</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">elif</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span> <span class="c1"># One regularization for all LVs</span>
+
+            <span class="n">lA</span> <span class="o">=</span> <span class="n">l</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">lA</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+        <span class="c1"># Compute Domain-Invariant Weight Vector</span>
+        <span class="n">w_pls</span> <span class="o">=</span> <span class="p">((</span><span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="nd">@x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="nd">@y</span><span class="p">))</span>  <span class="c1"># Ordinary PLS solution</span>
+
+
+        <span class="k">if</span><span class="p">(</span><span class="n">lA</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">heuristic</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span>  <span class="c1"># In case of regularization</span>
+
+                <span class="k">if</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">):</span>
+
+                    <span class="c1"># Convex relaxation of covariance difference matrix</span>
+                    <span class="n">D</span> <span class="o">=</span> <span class="n">convex_relaxation</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">)</span>
+
+                <span class="c1"># Multiple target domains</span>
+                <span class="k">elif</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+
+                    <span class="c1">#print(&#39;Relaxing domains ... &#39;)</span>
+                    <span class="n">ndoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span>
+                    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span>
+
+                    <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndoms</span><span class="p">):</span>
+
+                        <span class="n">d</span> <span class="o">=</span> <span class="n">convex_relaxation</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">[</span><span class="n">z</span><span class="p">])</span>
+                        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span> <span class="o">+</span> <span class="n">d</span>
+
+                <span class="k">elif</span><span class="p">(</span><span class="n">laplacian</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span>
+                
+                    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">])</span>
+                    <span class="n">L</span> <span class="o">=</span> <span class="n">transfer_laplacian</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">)</span>
+                    <span class="n">D</span> <span class="o">=</span> <span class="n">J</span><span class="o">.</span><span class="n">T</span><span class="nd">@L@J</span>
+
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;xt must either be a matrix or list of (appropriately dimensioned) matrices&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span><span class="p">(</span><span class="n">heuristic</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span> <span class="c1"># Regularization parameter heuristic</span>
+
+                    <span class="n">w_pls</span> <span class="o">=</span> <span class="n">w_pls</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w_pls</span><span class="p">)</span>
+                    <span class="n">gamma</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="nd">@w_pls</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">w_pls</span><span class="nd">@D@w_pls</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                    <span class="n">opt_l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gamma</span>
+                    <span class="n">lA</span> <span class="o">=</span> <span class="n">gamma</span>
+
+
+                <span class="n">reg</span> <span class="o">=</span> <span class="n">I</span><span class="o">+</span><span class="n">lA</span><span class="o">/</span><span class="p">((</span><span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="nd">@y</span><span class="p">))</span><span class="o">*</span><span class="n">D</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">reg</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">w_pls</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">assume_a</span><span class="o">=</span><span class="s1">&#39;sym&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># 10 times faster than previous comptation of reg</span>
+
+                <span class="c1"># Normalize w</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+                <span class="c1"># Absolute difference between variance of source and target domain projections</span>
+                <span class="n">discrepancy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">@</span> <span class="n">D</span> <span class="o">@</span> <span class="n">w</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+
+        <span class="k">else</span><span class="p">:</span>        
+
+            <span class="k">if</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+
+                <span class="n">D</span> <span class="o">=</span> <span class="n">convex_relaxation</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">D</span> <span class="o">=</span> <span class="n">convex_relaxation</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">)</span>
+
+            
+            <span class="n">w</span> <span class="o">=</span> <span class="n">w_pls</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w_pls</span><span class="p">)</span>
+            <span class="n">discrepancy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">@</span> <span class="n">D</span> <span class="o">@</span> <span class="n">w</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+    
+        <span class="c1"># Compute scores</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">x</span><span class="nd">@w</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">xs</span><span class="nd">@w</span><span class="o">.</span><span class="n">T</span>
+        
+        <span class="k">if</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+
+            <span class="n">tt</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xt</span><span class="p">)):</span>
+
+                <span class="n">tti</span> <span class="o">=</span> <span class="n">xt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="nd">@w</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">tt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tti</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">tt</span> <span class="o">=</span> <span class="n">xt</span><span class="nd">@w</span><span class="o">.</span><span class="n">T</span>
+
+
+        <span class="c1"># Regress y on t</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="nd">@t</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="nd">@t</span><span class="p">)</span>
+
+        <span class="c1"># Compute loadings</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="nd">@x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="nd">@t</span><span class="p">)</span>
+        <span class="n">ps</span> <span class="o">=</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">T</span><span class="nd">@xs</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">T</span><span class="nd">@ts</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+
+            <span class="n">pt</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xt</span><span class="p">)):</span>
+
+                <span class="n">pti</span> <span class="o">=</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="nd">@xt</span><span class="p">[</span><span class="n">z</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="nd">@tt</span><span class="p">[</span><span class="n">z</span><span class="p">])</span>
+                <span class="n">pt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pti</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">pt</span> <span class="o">=</span> <span class="p">(</span><span class="n">tt</span><span class="o">.</span><span class="n">T</span><span class="nd">@xt</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">tt</span><span class="o">.</span><span class="n">T</span><span class="nd">@tt</span><span class="p">)</span>
+
+
+        <span class="c1"># Deflate X and y (Gram-Schmidt orthogonalization)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">t</span><span class="nd">@p</span>
+
+        <span class="k">if</span> <span class="n">laplacian</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>                       <span class="c1"># Calibration transfer case</span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span> <span class="o">-</span> <span class="n">ts</span><span class="nd">@ps</span>
+        
+        <span class="k">if</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xt</span><span class="p">)):</span>
+
+                <span class="n">xt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="n">xt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span> <span class="o">-</span> <span class="n">tt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="nd">@pt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>  <span class="c1"># Deflate target matrix only if not zero</span>
+
+                <span class="k">if</span> <span class="n">laplacian</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>                       <span class="c1"># Calibration transfer case</span>
+                    <span class="n">xt</span> <span class="o">=</span> <span class="n">xt</span> <span class="o">-</span> <span class="n">tt</span><span class="nd">@pt</span>
+
+
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">t</span><span class="o">*</span><span class="n">c</span>
+
+        <span class="c1"># Store w,t,p,c</span>
+        <span class="n">W</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="n">T</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">Ts</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span>
+        <span class="n">P</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">Ps</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>       
+
+        <span class="k">if</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xt</span><span class="p">)):</span>
+
+                <span class="n">Pt</span><span class="p">[</span><span class="n">z</span><span class="p">][:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="n">Tt</span><span class="p">[</span><span class="n">z</span><span class="p">][:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tt</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xt</span><span class="p">[</span><span class="n">z</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            
+            <span class="n">Pt</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">Tt</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>         
+
+
+    <span class="c1"># Calculate regression vector</span>
+    <span class="k">if</span> <span class="n">laplacian</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>                       <span class="c1"># Calibration transfer case</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">W</span><span class="o">@</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">T</span><span class="nd">@W</span><span class="p">))</span><span class="nd">@C</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l</span><span class="p">]):</span>         <span class="c1"># Check if multiple regularization # parameters are passed (one for each LV)</span>
+
+            <span class="k">if</span> <span class="n">target_domain</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>                <span class="c1"># Multiple target domains (Domain unknown)</span>
+
+                <span class="n">b</span> <span class="o">=</span> <span class="n">W</span><span class="o">@</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">T</span><span class="nd">@W</span><span class="p">))</span><span class="nd">@C</span>
+
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>        <span class="c1"># Single target domain</span>
+
+                <span class="n">b</span> <span class="o">=</span> <span class="n">W</span><span class="o">@</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Pt</span><span class="o">.</span><span class="n">T</span><span class="nd">@W</span><span class="p">))</span><span class="nd">@C</span>
+
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">xt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>              <span class="c1"># Multiple target domains (Domain known)</span>
+
+                <span class="n">b</span> <span class="o">=</span> <span class="n">W</span><span class="o">@</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Pt</span><span class="p">[</span><span class="n">target_domain</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="nd">@W</span><span class="p">))</span><span class="nd">@C</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">b</span> <span class="o">=</span> <span class="n">W</span><span class="o">@</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">T</span><span class="nd">@W</span><span class="p">))</span><span class="nd">@C</span>   
+
+
+    <span class="c1"># Store residuals</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">Es</span> <span class="o">=</span> <span class="n">xs</span>
+    <span class="n">Et</span> <span class="o">=</span> <span class="n">xt</span>
+    <span class="n">Ey</span> <span class="o">=</span> <span class="n">y</span>
+
+    <span class="k">return</span> <span class="n">b</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">Ts</span><span class="p">,</span> <span class="n">Tt</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Ps</span><span class="p">,</span> <span class="n">Pt</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">Es</span><span class="p">,</span> <span class="n">Et</span><span class="p">,</span> <span class="n">Ey</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">opt_l</span><span class="p">,</span> <span class="n">discrepancy</span></div>
+
+
+
+<div class="viewcode-block" id="convex_relaxation">
+<a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.functions.convex_relaxation">[docs]</a>
+<span class="k">def</span> <span class="nf">convex_relaxation</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform convex relaxation of the covariance difference matrix.</span>
+
+<span class="sd">    This relaxation involves computing the eigenvalue decomposition of the symmetric covariance </span>
+<span class="sd">    difference matrix, inverting the signs of negative eigenvalues, and reconstructing the matrix.</span>
+<span class="sd">    This corresponds to an upper bound on the covariance difference between source and target domains.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    xs : ndarray of shape (n_source_samples, n_features)</span>
+<span class="sd">        Feature data from the source domain.</span>
+
+<span class="sd">    xt : ndarray of shape (n_target_samples, n_features)</span>
+<span class="sd">        Feature data from the target domain.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    D : ndarray of shape (n_features, n_features)</span>
+<span class="sd">        Relaxed covariance difference matrix.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    Ramin Nikzad-Langerodi et al., &quot;Domain-Invariant Regression under Beer-Lambert&#39;s Law&quot;, Proc. ICMLA, 2019.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.functions import convex_relaxation</span>
+<span class="sd">    &gt;&gt;&gt; xs = np.random.random((100, 10))</span>
+<span class="sd">    &gt;&gt;&gt; xt = np.random.random((100, 10))</span>
+<span class="sd">    &gt;&gt;&gt; D = convex_relaxation(xs, xt)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Preliminaries</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xt</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">])</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    
+    <span class="c1"># Compute difference between source and target covariance matrices   </span>
+    <span class="n">rot</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">ns</span><span class="o">*</span><span class="n">xs</span><span class="o">.</span><span class="n">T</span><span class="nd">@xs</span><span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">nt</span><span class="o">*</span><span class="n">xt</span><span class="o">.</span><span class="n">T</span><span class="nd">@xt</span><span class="p">)</span> 
+
+    <span class="c1"># Convex Relaxation</span>
+    <span class="n">w</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
+    <span class="n">eigs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">eigs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">eigs</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">v</span><span class="nd">@eigs@v</span><span class="o">.</span><span class="n">T</span> 
+
+    <span class="k">return</span> <span class="n">D</span></div>
+
+                    
+
+<div class="viewcode-block" id="transfer_laplacian">
+<a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.functions.transfer_laplacian">[docs]</a>
+<span class="k">def</span> <span class="nf">transfer_laplacian</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a Laplacian matrix for calibration transfer problems.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    x : ndarray of shape (n_samples, n_features)</span>
+<span class="sd">        Data samples from device 1.</span>
+
+<span class="sd">    y : ndarray of shape (n_samples, n_features)</span>
+<span class="sd">        Data samples from device 2.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    L : ndarray of shape (2 * n_samples, 2 * n_samples)</span>
+<span class="sd">        The Laplacian matrix for the calibration transfer problem.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    Nikzad‐Langerodi, R., &amp; Sobieczky, F. (2021). Graph‐based calibration transfer. </span>
+<span class="sd">    Journal of Chemometrics, 35(4), e3319.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.functions import transfer_laplacian</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([[1, 2], [3, 4]])</span>
+<span class="sd">    &gt;&gt;&gt; y = np.array([[2, 3], [4, 5]])</span>
+<span class="sd">    &gt;&gt;&gt; L = transfer_laplacian(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(L)</span>
+<span class="sd">    [[ 1.  0. -1. -0.]</span>
+<span class="sd">     [ 0.  1. -0. -1.]</span>
+<span class="sd">     [-1. -0.  1.  0.]</span>
+<span class="sd">     [-0. -1.  0.  1.]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">I</span><span class="p">,</span><span class="o">-</span><span class="n">I</span><span class="p">]),</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="o">-</span><span class="n">I</span><span class="p">,</span><span class="n">I</span><span class="p">])])</span>
+
+    <span class="k">return</span> <span class="n">L</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ramin Nikzad-Langerodi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

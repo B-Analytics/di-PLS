@@ -1,8 +1,6 @@
-diPLSlib.utils package
-======================
+diPLSlib.utils subpackage
+=========================
 
-Submodules
-----------
 
 diPLSlib.utils.misc module
 --------------------------

@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>diPLSlib.utils.misc &mdash; diPLSlib 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            diPLSlib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../diPLSlib.html">diPLSlib package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">diPLSlib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">diPLSlib.utils.misc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for diPLSlib.utils.misc</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Some helper functions for diPLSlib</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span> 
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">f</span>
+
+<div class="viewcode-block" id="gengaus">
+<a class="viewcode-back" href="../../../diPLSlib.utils.html#diPLSlib.utils.misc.gengaus">[docs]</a>
+<span class="k">def</span> <span class="nf">gengaus</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a Gaussian spectrum-like signal with optional random noise.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    length : int</span>
+<span class="sd">        Length of the generated signal.</span>
+
+<span class="sd">    mu : float</span>
+<span class="sd">        Mean of the Gaussian function.</span>
+
+<span class="sd">    sigma : float</span>
+<span class="sd">        Standard deviation of the Gaussian function.</span>
+
+<span class="sd">    mag : float</span>
+<span class="sd">        Magnitude of the Gaussian signal.</span>
+
+<span class="sd">    noise : float, optional (default=0)</span>
+<span class="sd">        Standard deviation of the Gaussian noise to be added to the signal.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    signal : ndarray of shape (length,)</span>
+<span class="sd">        The generated Gaussian signal with noise.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.utils.misc import gengaus</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import scipy.stats</span>
+<span class="sd">    &gt;&gt;&gt; signal = gengaus(100, 50, 10, 5, noise=0.1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">mag</span><span class="o">*</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">length</span><span class="p">),</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">noise</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">n</span>
+
+    <span class="k">return</span> <span class="n">signal</span></div>
+
+
+
+<div class="viewcode-block" id="hellipse">
+<a class="viewcode-back" href="../../../diPLSlib.utils.html#diPLSlib.utils.misc.hellipse">[docs]</a>
+<span class="k">def</span> <span class="nf">hellipse</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span> 
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the 95% confidence interval ellipse for a 2D scatter plot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    X : ndarray of shape (n_samples, 2)</span>
+<span class="sd">        Matrix of data points.</span>
+
+<span class="sd">    alpha : float, optional (default=0.05)</span>
+<span class="sd">        Significance level for the confidence interval.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    el : ndarray of shape (2, 100)</span>
+<span class="sd">        Coordinates of the ellipse&#39;s points. To plot, use `plt.plot(el[0, :], el[1, :])`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.utils.misc import hellipse</span>
+<span class="sd">    &gt;&gt;&gt; X = np.random.random((100, 2))</span>
+<span class="sd">    &gt;&gt;&gt; el = hellipse(X)</span>
+<span class="sd">    &gt;&gt;&gt; plt.scatter(X[:,0], X[:,1], label=&#39;Data points&#39;)            # doctest: +ELLIPSIS</span>
+<span class="sd">    &lt;matplotlib.collections.PathCollection object at ...&gt;</span>
+<span class="sd">    &gt;&gt;&gt; plt.plot(el[0,:], el[1,:], label=&#39;95% Confidence Ellipse&#39;)  # doctest: +ELLIPSIS</span>
+<span class="sd">    [&lt;matplotlib.lines.Line2D object at ...&gt;]</span>
+<span class="sd">    &gt;&gt;&gt; plt.legend()                                                # doctest: +ELLIPSIS</span>
+<span class="sd">    &lt;matplotlib.legend.Legend object at ...&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Means</span>
+    <span class="n">mean_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>   
+    <span class="n">mean_all</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">mean_all</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Covariance matrix</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">comat_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+
+    <span class="c1"># SVD</span>
+    <span class="n">U</span><span class="p">,</span><span class="n">S</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">comat_all</span><span class="p">)</span>
+
+    <span class="c1"># Confidence limit computed as the 95% quantile of the F-Distribution</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">X</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">quant</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span>
+    <span class="n">Conf</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">f</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">quant</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+    
+    <span class="c1"># Evalute CI on (0,2pi)</span>
+    <span class="n">el</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">sT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">S</span><span class="o">*</span><span class="n">Conf</span><span class="p">)))</span>
+        <span class="n">el</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">mean_all</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">sT</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">j</span><span class="p">])]))</span>   
+
+    <span class="k">return</span> <span class="n">el</span></div>
+
+
+
+<div class="viewcode-block" id="rmse">
+<a class="viewcode-back" href="../../../diPLSlib.utils.html#diPLSlib.utils.misc.rmse">[docs]</a>
+<span class="k">def</span> <span class="nf">rmse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the Root Mean Squared Error (RMSE) between two arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    y : ndarray of shape (n_samples,)</span>
+<span class="sd">        True values.</span>
+
+<span class="sd">    yhat : ndarray of shape (n_samples,)</span>
+<span class="sd">        Predicted values.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    error : ndarray of shape (n_samples,)</span>
+<span class="sd">        The RMSE between `y` and `yhat`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.utils.misc import rmse</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = np.array([2, 3, 4])</span>
+<span class="sd">    &gt;&gt;&gt; error = rmse(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(error)</span>
+<span class="sd">    1.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(((</span><span class="n">y</span><span class="o">-</span><span class="n">yhat</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ramin Nikzad-Langerodi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

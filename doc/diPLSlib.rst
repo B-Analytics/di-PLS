@@ -1,16 +1,6 @@
 diPLSlib package
 ================
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   diPLSlib.utils
-
-Submodules
-----------
 
 diPLSlib.functions module
 -------------------------
@@ -27,6 +17,14 @@ diPLSlib.models module
    :members:
    :undoc-members:
    :show-inheritance:
+
+diPLSlib.utils subpackage
+-------------------------
+
+.. toctree::
+   :maxdepth: 4
+
+   diPLSlib.utils
 
 Module contents
 ---------------
