@@ -41,7 +41,6 @@ def gengaus(length, mu, sigma, mag, noise=0):
     >>> import numpy as np
     >>> import scipy.stats
     >>> signal = gengaus(100, 50, 10, 5, noise=0.1)
-    >>> print(signal)
     """
 
     s = mag*norm.pdf(np.arange(length),mu,sigma)
@@ -78,10 +77,12 @@ def hellipse(X, alpha=0.05):
     >>> from diPLSlib.utils.misc import hellipse
     >>> X = np.random.random((100, 2))
     >>> el = hellipse(X)
-    >>> plt.scatter(X[:,0], X[:,1], label='Data points')
-    >>> plt.plot(el[0,:], el[1,:], label='95% Confidence Ellipse')
-    >>> plt.legend()
-    >>> plt.show()
+    >>> plt.scatter(X[:,0], X[:,1], label='Data points')            # doctest: +ELLIPSIS
+    <matplotlib.collections.PathCollection object at ...>
+    >>> plt.plot(el[0,:], el[1,:], label='95% Confidence Ellipse')  # doctest: +ELLIPSIS
+    [<matplotlib.lines.Line2D object at ...>]
+    >>> plt.legend()                                                # doctest: +ELLIPSIS
+    <matplotlib.legend.Legend object at ...>
     """
     
     # Means
@@ -139,6 +140,7 @@ def rmse(y, yhat):
     >>> y = np.array([2, 3, 4])
     >>> error = rmse(x, y)
     >>> print(error)
+    1.0
     """
 
     return np.sqrt(((y-yhat)**2).mean())

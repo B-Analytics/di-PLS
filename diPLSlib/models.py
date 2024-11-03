@@ -142,10 +142,12 @@ class DIPLS(RegressorMixin, BaseEstimator):
     >>> xs = np.random.rand(100, 10)
     >>> xt = np.random.rand(50, 10)
     >>> X = np.random.rand(10, 10)
-    >>> model = DIPLS(x, y, xs, xt, A=5)
-    >>> model.fit(l=[0.1], centering=True, heuristic=False)
-    >>> yhat, _ = model.predict(X, y_test=[], rescale='Target')
-    >>> print(yhat)
+    >>> model = DIPLS(A=5, l=[10])
+    >>> model.fit(x, y, xs, xt)
+    DIPLS(A=5, l=[10])
+
+    >>> xtest = np.array([5, 7, 4, 3, 2, 1, 6, 8, 9, 10]).reshape(1, -1)
+    >>> yhat = model.predict(xtest)
     """
 
     def __init__(self, A=2, l=[0], centering=True, heuristic=False, target_domain=0, rescale='Target'):
@@ -184,9 +186,14 @@ class DIPLS(RegressorMixin, BaseEstimator):
 
         Returns
         -------
-
-        None
+        self : object
+            Fitted model instance.
         """
+
+        # Preliminaries
+        self.n, self.k = X.shape
+        self.ns, _ = xs.shape
+        self.nt, _ = xt.shape
         
         self.x = X
         self.y = y
@@ -241,7 +248,7 @@ class DIPLS(RegressorMixin, BaseEstimator):
         Parameters
         ----------
 
-        X : ndarray of shape (n_samples_test, n_features)
+        X : ndarray of shape (n_samples, n_features)
             Test data matrix to perform the prediction on.
 
         Returns
@@ -273,7 +280,7 @@ class DIPLS(RegressorMixin, BaseEstimator):
 
             elif(self.rescale == 'Source'):
 
-                Xtest = X[...,:] - self.mu_s_
+                Xtest = X[...,:] - self.mu_
 
             elif(self.rescale == 'none'):
 
@@ -306,20 +313,24 @@ class GCTPLS(DIPLS):
     Parameters
     ----------
 
-    x : ndarray of shape (n_samples, n_features)
-        Labeled input data from the source domain.
+    l : Union[int, List[int]], default=0
+        Regularization parameter. Can be a single value or a list of different
+        values for each latent variable (LV). This parameter controls the degree
+        of regularization applied during the fitting process.
 
-    y : ndarray of shape (n_samples, 1)
-        Response variable corresponding to the input data `x`.
+    centering : bool, default=True
+        If True, source and target domain data are mean-centered before fitting.
+        Centering can be crucial in adjusting data for more effective transfer learning.
 
-    xs : ndarray of shape (n_sample_pairs, n_features)
-        Source domain X-data.
+    heuristic : bool, default=False
+        If True, the regularization parameter is set to a heuristic value aimed
+        at balancing model fitting quality for the response variable y while minimizing
+        discrepancies between domain representations.
 
-    xt : ndarray of shape (n_sample_pairs, n_features)
-        Target domain X-data. 
+    rescale : Union[str, ndarray], default='Target'
+        Determines rescaling of the test data. If 'Target' or 'Source', the test data will be rescaled to the mean of xt or xs, respectively. 
+        If an ndarray is provided, the test data will be rescaled to the mean of the provided array.
 
-    A : int
-        Number of latent variables to be used in the model.
 
     Attributes
     ----------
@@ -336,61 +347,61 @@ class GCTPLS(DIPLS):
     k : int
         Number of features (variables) in `x`.
 
-    mu : ndarray of shape (n_features,)
+    mu_ : ndarray of shape (n_features,)
         Mean of columns in `x`.
 
-    mu_s : ndarray of shape (n_features,)
+    mu_s_ : ndarray of shape (n_features,)
         Mean of columns in `xs`.
 
-    mu_t : ndarray of shape (n_features,) or ndarray of shape (n_domains, n_features)
-        Mean of columns in `xt`, averaged per target domain if multiple domains exist.
+    mu_t_ : ndarray of shape (n_features,)
+        Mean of columns in `xt`.
 
-    b : ndarray of shape (n_features, 1)
+    b_ : ndarray of shape (n_features, 1)
         Regression coefficient vector.
 
-    b0 : float
+    b0_ : float
         Intercept of the regression model.
 
-    T : ndarray of shape (n_samples, A)
+    T_ : ndarray of shape (n_samples, A)
         Training data projections (scores).
 
-    Ts : ndarray of shape (n_source_samples, A)
+    Ts_ : ndarray of shape (n_source_samples, A)
         Source domain projections (scores).
 
-    Tt : ndarray of shape (n_target_samples, A)
+    Tt_ : ndarray of shape (n_target_samples, A)
         Target domain projections (scores).
 
-    W : ndarray of shape (n_features, A)
+    W_ : ndarray of shape (n_features, A)
         Weight matrix.
 
-    P : ndarray of shape (n_features, A)
+    P_ : ndarray of shape (n_features, A)
         Loadings matrix corresponding to x.
 
-    Ps : ndarray of shape (n_features, A)
+    Ps_ : ndarray of shape (n_features, A)
         Loadings matrix corresponding to xs.
 
-    Pt : ndarray of shape (n_features, A)
+    Pt_ : ndarray of shape (n_features, A)
         Loadings matrix corresponding to xt.
 
-    E : ndarray of shape (n_source_samples, n_features)
+    E_ : ndarray of shape (n_source_samples, n_features)
         Residuals of source domain data.
 
-    Es : ndarray of shape (n_source_samples, n_features)
+    Es_ : ndarray of shape (n_source_samples, n_features)
         Source domain residual matrix.
 
-    Et : ndarray of shape (n_target_samples, n_features)
+    Et_ : ndarray of shape (n_target_samples, n_features)
         Target domain residual matrix.
 
-    Ey : ndarray of shape (n_source_samples, 1)
+    Ey_ : ndarray of shape (n_source_samples, 1)
         Residuals of response variable in the source domain.
 
-    C : ndarray of shape (A, 1)
+    C_ : ndarray of shape (A, 1)
         Regression vector relating source projections to the response variable.
 
-    opt_l : ndarray of shape (A, 1)
+    opt_l_ : ndarray of shape (A, 1)
         Heuristically determined regularization parameter for each latent variable.
 
-    discrepancy : ndarray
+    discrepancy_ : ndarray
         The variance discrepancy between source and target domain projections.
 
 
@@ -408,82 +419,83 @@ class GCTPLS(DIPLS):
     >>> y = np.random.rand(100, 1)
     >>> xs = np.random.rand(80, 10)
     >>> xt = np.random.rand(80, 10)
-    >>> model = GCTPLS(x, y, xs, xt, 3)
-    >>> model.fit(l=[100])
-    >>> X = np.random.rand(20, 10)
-    >>> y_pred, _ = model.predict(X)
-    >>> print(y_pred)
+    >>> model = GCTPLS(A=3, l=[10])
+    >>> model.fit(x, y, xs, xt)
+    GCTPLS(A=3, l=[10])
+    >>> xtest = np.array([5, 7, 4, 3, 2, 1, 6, 8, 9, 10]).reshape(1, -1)
+    >>> yhat = model.predict(xtest)
     """
 
-    def __init__(self, x:np.ndarray, y:np.ndarray, xs:np.ndarray, xt:np.ndarray, A:int=2):
-        
-        super().__init__(x, y, xs, xt, A)
+    def __init__(self, A=2, l=[0], centering=True, heuristic=False, rescale='Target'):
+        # Model parameters
+        self.A = A
+        self.l = l
+        self.centering = centering
+        self.heuristic = heuristic
+        self.rescale = rescale
 
         
-    def fit(self, l=0, centering=True, heuristic=False):
+    def fit(self, X, y, xs, xt):
         """
         Fit the GCT-PLS model to data.
 
         Parameters
         ----------
 
-        l : Union[int, List[int]], default=0
-            Regularization parameter. Can be a single value or a list of different
-            values for each latent variable (LV). This parameter controls the degree
-            of regularization applied during the fitting process.
+        x : ndarray of shape (n_samples, n_features)
+            Labeled input data from the source domain.
 
-        centering : bool, default=True
-            If True, source and target domain data are mean-centered before fitting.
-            Centering can be crucial in adjusting data for more effective transfer learning.
+        y : ndarray of shape (n_samples, 1)
+            Response variable corresponding to the input data `x`.
 
-        heuristic : bool, default=False
-            If True, the regularization parameter is set to a heuristic value aimed
-            at balancing model fitting quality for the response variable y while minimizing
-            discrepancies between domain representations.
+        xs : ndarray of shape (n_sample_pairs, n_features)
+            Source domain X-data.
+
+        xt : ndarray of shape (n_sample_pairs, n_features)
+            Target domain X-data. 
+ 
 
         Returns
         -------
 
         self : object
-            Fitted model instance. Allows for method chaining in a pipeline setup.
+            Fitted model instance.
         """
         
+        # Preliminaries
+        self.n, self.k = X.shape
+        self.ns, _ = xs.shape
+        self.nt, _ = xt.shape
+
+        if self.ns != self.nt:
+            raise ValueError("The number of samples in the source domain (ns) must be equal to the number of samples in the target domain (nt).")
+        
+        self.x = X
+        self.y = y
+        self.xs = xs
+        self.xt = xt
+        self.b0_ = np.mean(self.y)
+        self.mu_ = np.mean(self.x, axis=0)
+        self.mu_s_ = np.mean(self.x, axis=0)
+        self.mu_t_ = np.mean(self.x, axis=0)
+
         # Mean Centering
-        if centering is True:
+        if self.centering is True:
             
-            x = self.x[...,:] - self.mu
-            y = self.y - self.b0
+            x = self.x[...,:] - self.mu_
+            y = self.y - self.b0_
 
         else: 
             
             x = self.x
             y = self.y
 
-
         xs = self.xs
         xt = self.xt
             
         # Fit model and store matrices
-        A = self.A
-        (b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy) = algo.dipals(x, y, xs, xt, A, l, heuristic=heuristic, laplacian=True)
+        results = algo.dipals(x, y, xs, xt, self.A, self.l, heuristic=self.heuristic, laplacian=True)
+        self.b_, self.T_, self.Ts_, self.Tt_, self.W_, self.P_, self.Ps_, self.Pt_, self.E_, self.Es_, self.Et_, self.Ey_, self.C_, self.opt_l_, self.discrepancy_ = results
 
-        self.b = b
-        self.T = T
-        self.Ts = Ts
-        self.Tt = Tt
-        self.W = W
-        self.P = P
-        self.Ps = Ps
-        self.Pt = Pt
-        self.E = E
-        self.Es = Es
-        self.Et = Et
-        self.Ey = Ey
-        self.C = C
-        self.discrepancy = discrepancy
-
-        if heuristic is True:
-
-            self.opt_l = opt_l
-
+        return self
 
