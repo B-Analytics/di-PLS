@@ -1,0 +1,852 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>diPLSlib package &mdash; diPLSlib 2.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="diPLSlib.utils package" href="diPLSlib.utils.html" />
+    <link rel="prev" title="diPLSlib" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            diPLSlib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">diPLSlib</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">diPLSlib package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="diPLSlib.utils.html">diPLSlib.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-diPLSlib.functions">diPLSlib.functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#diPLSlib.functions.convex_relaxation"><code class="docutils literal notranslate"><span class="pre">convex_relaxation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#diPLSlib.functions.dipals"><code class="docutils literal notranslate"><span class="pre">dipals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#diPLSlib.functions.transfer_laplacian"><code class="docutils literal notranslate"><span class="pre">transfer_laplacian()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-diPLSlib.models">diPLSlib.models module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#diPLSlib.models.DIPLS"><code class="docutils literal notranslate"><span class="pre">DIPLS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#diPLSlib.models.GCTPLS"><code class="docutils literal notranslate"><span class="pre">GCTPLS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-diPLSlib">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">diPLSlib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">diPLSlib</a></li>
+      <li class="breadcrumb-item active">diPLSlib package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/diPLSlib.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="diplslib-package">
+<h1>diPLSlib package<a class="headerlink" href="#diplslib-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="diPLSlib.utils.html">diPLSlib.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="diPLSlib.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diPLSlib.utils.html#module-diPLSlib.utils.misc">diPLSlib.utils.misc module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="diPLSlib.utils.html#diPLSlib.utils.misc.gengaus"><code class="docutils literal notranslate"><span class="pre">gengaus()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="diPLSlib.utils.html#diPLSlib.utils.misc.hellipse"><code class="docutils literal notranslate"><span class="pre">hellipse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="diPLSlib.utils.html#diPLSlib.utils.misc.rmse"><code class="docutils literal notranslate"><span class="pre">rmse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="diPLSlib.utils.html#module-diPLSlib.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-diPLSlib.functions">
+<span id="diplslib-functions-module"></span><h2>diPLSlib.functions module<a class="headerlink" href="#module-diPLSlib.functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="diPLSlib.functions.convex_relaxation">
+<span class="sig-prename descclassname"><span class="pre">diPLSlib.functions.</span></span><span class="sig-name descname"><span class="pre">convex_relaxation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#diPLSlib.functions.convex_relaxation" title="Link to this definition"></a></dt>
+<dd><p>Perform convex relaxation of the covariance difference matrix.</p>
+<p>This relaxation involves computing the eigenvalue decomposition of the symmetric covariance 
+difference matrix, inverting the signs of negative eigenvalues, and reconstructing the matrix.
+This corresponds to an upper bound on the covariance difference between source and target domains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xs</strong><span class="classifier">ndarray of shape (n_source_samples, n_features)</span></dt><dd><p>Feature data from the source domain.</p>
+</dd>
+<dt><strong>xt</strong><span class="classifier">ndarray of shape (n_target_samples, n_features)</span></dt><dd><p>Feature data from the target domain.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>D</strong><span class="classifier">ndarray of shape (n_features, n_features)</span></dt><dd><p>Relaxed covariance difference matrix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<p>Ramin Nikzad-Langerodi et al., “Domain-Invariant Regression under Beer-Lambert’s Law”, Proc. ICMLA, 2019.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.functions</span> <span class="kn">import</span> <span class="n">convex_relaxation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">convex_relaxation</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="diPLSlib.functions.dipals">
+<span class="sig-prename descclassname"><span class="pre">diPLSlib.functions.</span></span><span class="sig-name descname"><span class="pre">dipals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_domain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laplacian</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#diPLSlib.functions.dipals" title="Link to this definition"></a></dt>
+<dd><p>Perform (Multiple) Domain-Invariant Partial Least Squares (di-PLS) regression.</p>
+<p>This method fits a PLS regression model using labeled source domain data and potentially 
+unlabeled target domain data across multiple domains, aiming to build a model that 
+generalizes well across different domains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">ndarray of shape (n_samples, n_features)</span></dt><dd><p>Labeled source domain data.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">ndarray of shape (n_samples, 1)</span></dt><dd><p>Response variable associated with the source domain.</p>
+</dd>
+<dt><strong>xs</strong><span class="classifier">ndarray of shape (n_source_samples, n_features)</span></dt><dd><p>Source domain feature data.</p>
+</dd>
+<dt><strong>xt</strong><span class="classifier">ndarray of shape (n_target_samples, n_features) or list of ndarray</span></dt><dd><p>Target domain feature data. Multiple domains can be provided as a list.</p>
+</dd>
+<dt><strong>A</strong><span class="classifier">int</span></dt><dd><p>Number of latent variables to use in the model.</p>
+</dd>
+<dt><strong>l</strong><span class="classifier">Union[int, ndarray]</span></dt><dd><p>Regularization parameter, which can either be a single float value or an array specifying 
+a different value for each latent variable.</p>
+</dd>
+<dt><strong>heuristic</strong><span class="classifier">bool, default=False</span></dt><dd><p>If True, automatically determine the regularization parameter to equally balance fitting 
+to Y and minimizing domain discrepancy.</p>
+</dd>
+<dt><strong>target_domain</strong><span class="classifier">int, default=0</span></dt><dd><p>Specifies which target domain the model should apply to, where 0 indicates the source domain.</p>
+</dd>
+<dt><strong>laplacian</strong><span class="classifier">bool, default=False</span></dt><dd><p>If True, uses a Laplacian matrix to regularize distances between matched calibration transfer 
+samples in latent variable space.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>b</strong><span class="classifier">ndarray of shape (n_features, 1)</span></dt><dd><p>Regression coefficient vector.</p>
+</dd>
+<dt><strong>b0</strong><span class="classifier">float</span></dt><dd><p>Intercept of the regression model.</p>
+</dd>
+<dt><strong>T</strong><span class="classifier">ndarray of shape (n_samples, A)</span></dt><dd><p>Training data projections (scores).</p>
+</dd>
+<dt><strong>Ts</strong><span class="classifier">ndarray of shape (n_source_samples, A)</span></dt><dd><p>Source domain projections (scores).</p>
+</dd>
+<dt><strong>Tt</strong><span class="classifier">ndarray of shape (n_target_samples, A)</span></dt><dd><p>Target domain projections (scores).</p>
+</dd>
+<dt><strong>W</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Weight matrix.</p>
+</dd>
+<dt><strong>P</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to x.</p>
+</dd>
+<dt><strong>Ps</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to xs.</p>
+</dd>
+<dt><strong>Pt</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to xt.</p>
+</dd>
+<dt><strong>E</strong><span class="classifier">ndarray of shape (n_source_samples, n_features)</span></dt><dd><p>Residuals of source domain data.</p>
+</dd>
+<dt><strong>Es</strong><span class="classifier">ndarray of shape (n_source_samples, n_features)</span></dt><dd><p>Source domain residual matrix.</p>
+</dd>
+<dt><strong>Et</strong><span class="classifier">ndarray of shape (n_target_samples, n_features)</span></dt><dd><p>Target domain residual matrix.</p>
+</dd>
+<dt><strong>Ey</strong><span class="classifier">ndarray of shape (n_source_samples, 1)</span></dt><dd><p>Residuals of response variable in the source domain.</p>
+</dd>
+<dt><strong>C</strong><span class="classifier">ndarray of shape (A, 1)</span></dt><dd><p>Regression vector relating source projections to the response variable.</p>
+</dd>
+<dt><strong>opt_l</strong><span class="classifier">ndarray of shape (A, 1)</span></dt><dd><p>Heuristically determined regularization parameter for each latent variable.</p>
+</dd>
+<dt><strong>discrepancy</strong><span class="classifier">ndarray</span></dt><dd><p>The variance discrepancy between source and target domain projections.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ol class="arabic simple">
+<li><p>Ramin Nikzad-Langerodi et al., “Domain-Invariant Partial Least Squares Regression”, Analytical Chemistry, 2018.</p></li>
+<li><p>Ramin Nikzad-Langerodi et al., “Domain-Invariant Regression under Beer-Lambert’s Law”, Proc. ICMLA, 2019.</p></li>
+<li><p>Ramin Nikzad-Langerodi et al., Domain adaptation for regression under Beer–Lambert’s law, Knowledge-Based Systems, 2020.</p></li>
+<li><ol class="upperalpha simple" start="2">
+<li><p>Mikulasek et al., “Partial least squares regression with multiple domains”, Journal of Chemometrics, 2023.</p></li>
+</ol>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.functions</span> <span class="kn">import</span> <span class="n">dipals</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">Ts</span><span class="p">,</span> <span class="n">Tt</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Ps</span><span class="p">,</span> <span class="n">Pt</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">Es</span><span class="p">,</span> <span class="n">Et</span><span class="p">,</span> <span class="n">Ey</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">opt_l</span><span class="p">,</span> <span class="n">discrepancy</span> <span class="o">=</span> <span class="n">dipals</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="diPLSlib.functions.transfer_laplacian">
+<span class="sig-prename descclassname"><span class="pre">diPLSlib.functions.</span></span><span class="sig-name descname"><span class="pre">transfer_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#diPLSlib.functions.transfer_laplacian" title="Link to this definition"></a></dt>
+<dd><p>Construct a Laplacian matrix for calibration transfer problems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">ndarray of shape (n_samples, n_features)</span></dt><dd><p>Data samples from device 1.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">ndarray of shape (n_samples, n_features)</span></dt><dd><p>Data samples from device 2.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>L</strong><span class="classifier">ndarray of shape (2 * n_samples, 2 * n_samples)</span></dt><dd><p>The Laplacian matrix for the calibration transfer problem.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<p>Nikzad‐Langerodi, R., &amp; Sobieczky, F. (2021). Graph‐based calibration transfer. 
+Journal of Chemometrics, 35(4), e3319.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.functions</span> <span class="kn">import</span> <span class="n">transfer_laplacian</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="n">transfer_laplacian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="go">[[ 1.  0. -1. -0.]</span>
+<span class="go"> [ 0.  1. -0. -1.]</span>
+<span class="go"> [-1. -0.  1.  0.]</span>
+<span class="go"> [-0. -1.  0.  1.]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-diPLSlib.models">
+<span id="diplslib-models-module"></span><h2>diPLSlib.models module<a class="headerlink" href="#module-diPLSlib.models" title="Link to this heading"></a></h2>
+<p>diPLSlib model classes</p>
+<ul class="simple">
+<li><p>DIPLS base class</p></li>
+<li><p>GCTPLS class</p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="diPLSlib.models.DIPLS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">diPLSlib.models.</span></span><span class="sig-name descname"><span class="pre">DIPLS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_domain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Target'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#diPLSlib.models.DIPLS" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RegressorMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEstimator</span></code></p>
+<p>Domain-Invariant Partial Least Squares (DIPLS) algorithm for domain adaptation.</p>
+<p>This class implements the DIPLS algorithm, which is designed to align feature distributions 
+across different domains while predicting the target variable <cite>y</cite>. It supports multiple 
+source and target domains through domain-specific feature transformations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A</strong><span class="classifier">int</span></dt><dd><p>Number of latent variables to be used in the model.</p>
+</dd>
+<dt><strong>l</strong><span class="classifier">Union[int, List[int]], default=0</span></dt><dd><p>Regularization parameter. Either a single value or a list of different
+values for each latent variable (LV).</p>
+</dd>
+<dt><strong>centering</strong><span class="classifier">bool, default=True</span></dt><dd><p>If True, source and target domain data are mean-centered.</p>
+</dd>
+<dt><strong>heuristic</strong><span class="classifier">bool, default=False</span></dt><dd><p>If True, the regularization parameter is set to a heuristic value that
+balances fitting the output variable y and minimizing domain discrepancy.</p>
+</dd>
+<dt><strong>target_domain</strong><span class="classifier">int, default=0</span></dt><dd><p>If multiple target domains are passed, target_domain specifies
+for which of the target domains the model should apply. 
+If target_domain=0, the model applies to the source domain,
+if target_domain=1, it applies to the first target domain, and so on.</p>
+</dd>
+<dt><strong>rescale</strong><span class="classifier">Union[str, ndarray], default=’Target’</span></dt><dd><p>Determines rescaling of the test data. If ‘Target’ or ‘Source’, the test data will be
+rescaled to the mean of xt or xs, respectively. If an ndarray is provided, the test data
+will be rescaled to the mean of the provided array.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>n</strong><span class="classifier">int</span></dt><dd><p>Number of samples in <cite>x</cite>.</p>
+</dd>
+<dt><strong>ns</strong><span class="classifier">int</span></dt><dd><p>Number of samples in <cite>xs</cite>.</p>
+</dd>
+<dt><strong>nt</strong><span class="classifier">int</span></dt><dd><p>Number of samples in <cite>xt</cite>.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>Number of features (variables) in <cite>x</cite>.</p>
+</dd>
+<dt><strong>mu_</strong><span class="classifier">ndarray of shape (n_features,)</span></dt><dd><p>Mean of columns in <cite>x</cite>.</p>
+</dd>
+<dt><strong>mu_s_</strong><span class="classifier">ndarray of shape (n_features,)</span></dt><dd><p>Mean of columns in <cite>xs</cite>.</p>
+</dd>
+<dt><strong>mu_t_</strong><span class="classifier">ndarray of shape (n_features,) or ndarray of shape (n_domains, n_features)</span></dt><dd><p>Mean of columns in <cite>xt</cite>, averaged per target domain if multiple domains exist.</p>
+</dd>
+<dt><strong>b_</strong><span class="classifier">ndarray of shape (n_features, 1)</span></dt><dd><p>Regression coefficient vector.</p>
+</dd>
+<dt><strong>b0_</strong><span class="classifier">float</span></dt><dd><p>Intercept of the regression model.</p>
+</dd>
+<dt><strong>T_</strong><span class="classifier">ndarray of shape (n_samples, A)</span></dt><dd><p>Training data projections (scores).</p>
+</dd>
+<dt><strong>Ts_</strong><span class="classifier">ndarray of shape (n_source_samples, A)</span></dt><dd><p>Source domain projections (scores).</p>
+</dd>
+<dt><strong>Tt_</strong><span class="classifier">ndarray of shape (n_target_samples, A)</span></dt><dd><p>Target domain projections (scores).</p>
+</dd>
+<dt><strong>W_</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Weight matrix.</p>
+</dd>
+<dt><strong>P_</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to x.</p>
+</dd>
+<dt><strong>Ps_</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to xs.</p>
+</dd>
+<dt><strong>Pt_</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to xt.</p>
+</dd>
+<dt><strong>E_</strong><span class="classifier">ndarray of shape (n_source_samples, n_features)</span></dt><dd><p>Residuals of source domain data.</p>
+</dd>
+<dt><strong>Es_</strong><span class="classifier">ndarray of shape (n_source_samples, n_features)</span></dt><dd><p>Source domain residual matrix.</p>
+</dd>
+<dt><strong>Et_</strong><span class="classifier">ndarray of shape (n_target_samples, n_features)</span></dt><dd><p>Target domain residual matrix.</p>
+</dd>
+<dt><strong>Ey_</strong><span class="classifier">ndarray of shape (n_source_samples, 1)</span></dt><dd><p>Residuals of response variable in the source domain.</p>
+</dd>
+<dt><strong>C_</strong><span class="classifier">ndarray of shape (A, 1)</span></dt><dd><p>Regression vector relating source projections to the response variable.</p>
+</dd>
+<dt><strong>opt_l_</strong><span class="classifier">ndarray of shape (A, 1)</span></dt><dd><p>Heuristically determined regularization parameter for each latent variable.</p>
+</dd>
+<dt><strong>discrepancy_</strong><span class="classifier">ndarray</span></dt><dd><p>The variance discrepancy between source and target domain projections.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#diPLSlib.models.DIPLS.fit" title="diPLSlib.models.DIPLS.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(X, y, xs, xt)</p></td>
+<td><p>Fit the DIPLS model.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata_routing</span></code>()</p></td>
+<td><p>Get metadata routing of this object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params</span></code>([deep])</p></td>
+<td><p>Get parameters for this estimator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#diPLSlib.models.DIPLS.predict" title="diPLSlib.models.DIPLS.predict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict</span></code></a>(X)</p></td>
+<td><p>Predict y using the fitted DIPLS model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code>(X, y[, sample_weight])</p></td>
+<td><p>Return the coefficient of determination of the prediction.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#diPLSlib.models.DIPLS.set_fit_request" title="diPLSlib.models.DIPLS.set_fit_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fit_request</span></code></a>(*[, xs, xt])</p></td>
+<td><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
+<td><p>Set the parameters of this estimator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#diPLSlib.models.DIPLS.set_score_request" title="diPLSlib.models.DIPLS.set_score_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_score_request</span></code></a>(*[, sample_weight])</p></td>
+<td><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<ol class="arabic simple">
+<li><p>Ramin Nikzad-Langerodi et al., “Domain-Invariant Partial Least Squares Regression”, Analytical Chemistry, 2018.</p></li>
+<li><p>Ramin Nikzad-Langerodi et al., “Domain-Invariant Regression under Beer-Lambert’s Law”, Proc. ICMLA, 2019.</p></li>
+<li><p>Ramin Nikzad-Langerodi et al., Domain adaptation for regression under Beer–Lambert’s law, Knowledge-Based Systems, 2020.</p></li>
+<li><ol class="upperalpha simple" start="2">
+<li><p>Mikulasek et al., “Partial least squares regression with multiple domains”, Journal of Chemometrics, 2023.</p></li>
+</ol>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.models</span> <span class="kn">import</span> <span class="n">DIPLS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">DIPLS</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">)</span>
+<span class="go">DIPLS(A=5, l=[10])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xtest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yhat</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xtest</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="diPLSlib.models.DIPLS.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#diPLSlib.models.DIPLS.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the DIPLS model.</p>
+<p>This method fits the domain-invariant partial least squares (di-PLS) model
+using the provided source and target domain data. It can handle both single 
+and multiple target domains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">ndarray of shape (n_samples, n_features)</span></dt><dd><p>Labeled input data from the source domain.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">ndarray of shape (n_samples, 1)</span></dt><dd><p>Response variable corresponding to the input data <cite>x</cite>.</p>
+</dd>
+<dt><strong>xs</strong><span class="classifier">ndarray of shape (n_samples_source, n_features)</span></dt><dd><p>Source domain X-data.</p>
+</dd>
+<dt><strong>xt</strong><span class="classifier">Union[ndarray of shape (n_samples_target, n_features), List[ndarray]]</span></dt><dd><p>Target domain X-data. Can be a single target domain or a list of arrays 
+representing multiple target domains.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>Fitted model instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="diPLSlib.models.DIPLS.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#diPLSlib.models.DIPLS.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict y using the fitted DIPLS model.</p>
+<p>This method predicts the response variable for the provided test data using
+the fitted domain-invariant partial least squares (di-PLS) model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">ndarray of shape (n_samples, n_features)</span></dt><dd><p>Test data matrix to perform the prediction on.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yhat</strong><span class="classifier">ndarray of shape (n_samples_test,)</span></dt><dd><p>Predicted response values for the test data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="diPLSlib.models.DIPLS.set_fit_request">
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#diPLSlib.models.DIPLS" title="diPLSlib.models.DIPLS"><span class="pre">DIPLS</span></a></span></span><a class="headerlink" href="#diPLSlib.models.DIPLS.set_fit_request" title="Link to this definition"></a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xs</strong><span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">xs</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+<dt><strong>xt</strong><span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">xt</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="diPLSlib.models.DIPLS.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#diPLSlib.models.DIPLS" title="diPLSlib.models.DIPLS"><span class="pre">DIPLS</span></a></span></span><a class="headerlink" href="#diPLSlib.models.DIPLS.set_score_request" title="Link to this definition"></a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_weight</strong><span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="diPLSlib.models.GCTPLS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">diPLSlib.models.</span></span><span class="sig-name descname"><span class="pre">GCTPLS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Target'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#diPLSlib.models.GCTPLS" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#diPLSlib.models.DIPLS" title="diPLSlib.models.DIPLS"><code class="xref py py-class docutils literal notranslate"><span class="pre">DIPLS</span></code></a></p>
+<p>Graph-based Calibration Transfer Partial Least Squares (GCT-PLS).</p>
+<p>This method minimizes the distance betwee source (xs) and target (xt) domain data pairs in the latent variable space
+while fitting the response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>l</strong><span class="classifier">Union[int, List[int]], default=0</span></dt><dd><p>Regularization parameter. Can be a single value or a list of different
+values for each latent variable (LV). This parameter controls the degree
+of regularization applied during the fitting process.</p>
+</dd>
+<dt><strong>centering</strong><span class="classifier">bool, default=True</span></dt><dd><p>If True, source and target domain data are mean-centered before fitting.
+Centering can be crucial in adjusting data for more effective transfer learning.</p>
+</dd>
+<dt><strong>heuristic</strong><span class="classifier">bool, default=False</span></dt><dd><p>If True, the regularization parameter is set to a heuristic value aimed
+at balancing model fitting quality for the response variable y while minimizing
+discrepancies between domain representations.</p>
+</dd>
+<dt><strong>rescale</strong><span class="classifier">Union[str, ndarray], default=’Target’</span></dt><dd><p>Determines rescaling of the test data. If ‘Target’ or ‘Source’, the test data will be rescaled to the mean of xt or xs, respectively. 
+If an ndarray is provided, the test data will be rescaled to the mean of the provided array.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>n</strong><span class="classifier">int</span></dt><dd><p>Number of samples in <cite>x</cite>.</p>
+</dd>
+<dt><strong>ns</strong><span class="classifier">int</span></dt><dd><p>Number of samples in <cite>xs</cite>.</p>
+</dd>
+<dt><strong>nt</strong><span class="classifier">int</span></dt><dd><p>Number of samples in <cite>xt</cite>.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>Number of features (variables) in <cite>x</cite>.</p>
+</dd>
+<dt><strong>mu_</strong><span class="classifier">ndarray of shape (n_features,)</span></dt><dd><p>Mean of columns in <cite>x</cite>.</p>
+</dd>
+<dt><strong>mu_s_</strong><span class="classifier">ndarray of shape (n_features,)</span></dt><dd><p>Mean of columns in <cite>xs</cite>.</p>
+</dd>
+<dt><strong>mu_t_</strong><span class="classifier">ndarray of shape (n_features,)</span></dt><dd><p>Mean of columns in <cite>xt</cite>.</p>
+</dd>
+<dt><strong>b_</strong><span class="classifier">ndarray of shape (n_features, 1)</span></dt><dd><p>Regression coefficient vector.</p>
+</dd>
+<dt><strong>b0_</strong><span class="classifier">float</span></dt><dd><p>Intercept of the regression model.</p>
+</dd>
+<dt><strong>T_</strong><span class="classifier">ndarray of shape (n_samples, A)</span></dt><dd><p>Training data projections (scores).</p>
+</dd>
+<dt><strong>Ts_</strong><span class="classifier">ndarray of shape (n_source_samples, A)</span></dt><dd><p>Source domain projections (scores).</p>
+</dd>
+<dt><strong>Tt_</strong><span class="classifier">ndarray of shape (n_target_samples, A)</span></dt><dd><p>Target domain projections (scores).</p>
+</dd>
+<dt><strong>W_</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Weight matrix.</p>
+</dd>
+<dt><strong>P_</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to x.</p>
+</dd>
+<dt><strong>Ps_</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to xs.</p>
+</dd>
+<dt><strong>Pt_</strong><span class="classifier">ndarray of shape (n_features, A)</span></dt><dd><p>Loadings matrix corresponding to xt.</p>
+</dd>
+<dt><strong>E_</strong><span class="classifier">ndarray of shape (n_source_samples, n_features)</span></dt><dd><p>Residuals of source domain data.</p>
+</dd>
+<dt><strong>Es_</strong><span class="classifier">ndarray of shape (n_source_samples, n_features)</span></dt><dd><p>Source domain residual matrix.</p>
+</dd>
+<dt><strong>Et_</strong><span class="classifier">ndarray of shape (n_target_samples, n_features)</span></dt><dd><p>Target domain residual matrix.</p>
+</dd>
+<dt><strong>Ey_</strong><span class="classifier">ndarray of shape (n_source_samples, 1)</span></dt><dd><p>Residuals of response variable in the source domain.</p>
+</dd>
+<dt><strong>C_</strong><span class="classifier">ndarray of shape (A, 1)</span></dt><dd><p>Regression vector relating source projections to the response variable.</p>
+</dd>
+<dt><strong>opt_l_</strong><span class="classifier">ndarray of shape (A, 1)</span></dt><dd><p>Heuristically determined regularization parameter for each latent variable.</p>
+</dd>
+<dt><strong>discrepancy_</strong><span class="classifier">ndarray</span></dt><dd><p>The variance discrepancy between source and target domain projections.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#diPLSlib.models.GCTPLS.fit" title="diPLSlib.models.GCTPLS.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(X, y, xs, xt)</p></td>
+<td><p>Fit the GCT-PLS model to data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata_routing</span></code>()</p></td>
+<td><p>Get metadata routing of this object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params</span></code>([deep])</p></td>
+<td><p>Get parameters for this estimator.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict</span></code>(X)</p></td>
+<td><p>Predict y using the fitted DIPLS model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code>(X, y[, sample_weight])</p></td>
+<td><p>Return the coefficient of determination of the prediction.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#diPLSlib.models.GCTPLS.set_fit_request" title="diPLSlib.models.GCTPLS.set_fit_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fit_request</span></code></a>(*[, xs, xt])</p></td>
+<td><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code>(**params)</p></td>
+<td><p>Set the parameters of this estimator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#diPLSlib.models.GCTPLS.set_score_request" title="diPLSlib.models.GCTPLS.set_score_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_score_request</span></code></a>(*[, sample_weight])</p></td>
+<td><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p>Nikzad‐Langerodi, R., &amp; Sobieczky, F. (2021). Graph‐based calibration transfer. 
+Journal of Chemometrics, 35(4), e3319.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.models</span> <span class="kn">import</span> <span class="n">GCTPLS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">GCTPLS</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">)</span>
+<span class="go">GCTPLS(A=3, l=[10])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xtest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yhat</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xtest</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="diPLSlib.models.GCTPLS.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#diPLSlib.models.GCTPLS.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the GCT-PLS model to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">ndarray of shape (n_samples, n_features)</span></dt><dd><p>Labeled input data from the source domain.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">ndarray of shape (n_samples, 1)</span></dt><dd><p>Response variable corresponding to the input data <cite>x</cite>.</p>
+</dd>
+<dt><strong>xs</strong><span class="classifier">ndarray of shape (n_sample_pairs, n_features)</span></dt><dd><p>Source domain X-data.</p>
+</dd>
+<dt><strong>xt</strong><span class="classifier">ndarray of shape (n_sample_pairs, n_features)</span></dt><dd><p>Target domain X-data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>Fitted model instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="diPLSlib.models.GCTPLS.set_fit_request">
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#diPLSlib.models.GCTPLS" title="diPLSlib.models.GCTPLS"><span class="pre">GCTPLS</span></a></span></span><a class="headerlink" href="#diPLSlib.models.GCTPLS.set_fit_request" title="Link to this definition"></a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xs</strong><span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">xs</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+<dt><strong>xt</strong><span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">xt</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="diPLSlib.models.GCTPLS.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#diPLSlib.models.GCTPLS" title="diPLSlib.models.GCTPLS"><span class="pre">GCTPLS</span></a></span></span><a class="headerlink" href="#diPLSlib.models.GCTPLS.set_score_request" title="Link to this definition"></a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_weight</strong><span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-diPLSlib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-diPLSlib" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="diPLSlib" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="diPLSlib.utils.html" class="btn btn-neutral float-right" title="diPLSlib.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ramin Nikzad-Langerodi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
