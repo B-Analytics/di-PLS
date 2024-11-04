@@ -11,7 +11,8 @@ N/A
 N/A
 
 ### Fixed
-Bug in the extraction of the number of samples nt in the fit method corrected
+- Bug in the extraction of the number of samples nt in the fit method corrected.
+- Tested correct behavior in the notebooks.
 
 ### Removed
 N/A

@@ -13,3 +13,6 @@ build/
 
 # Ignore the .env file
 .env
+
+# ignore the release notes file
+.release_notes.md
