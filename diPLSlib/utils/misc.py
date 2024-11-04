@@ -143,4 +143,4 @@ def rmse(y, yhat):
     1.0
     """
 
-    return np.sqrt(((y-yhat)**2).mean())
+    return np.sqrt(((y.ravel()-yhat.ravel())**2).mean())
