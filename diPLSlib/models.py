@@ -192,8 +192,7 @@ class DIPLS(RegressorMixin, BaseEstimator):
 
         # Preliminaries
         self.n, self.k = X.shape
-        self.ns, _ = xs.shape
-        self.nt, _ = xt.shape
+        self.ns, _ = xs.shape        
         
         self.x = X
         self.y = y
@@ -212,12 +211,14 @@ class DIPLS(RegressorMixin, BaseEstimator):
 
             # Mutliple target domains
             if isinstance(self.xt, list):
-
+                
+                self.nt, _ = xt[0].shape
                 self.mu_t_ = [np.mean(x, axis=0) for x in self.xt]
                 self.xt = [x - mu for x, mu in zip(self.xt, self.mu_t_)]
             
             else:
 
+                self.nt, _ = xt.shape
                 self.mu_t_ = np.mean(self.xt, axis=0)
                 self.xt = self.xt - self.mu_t_
 
