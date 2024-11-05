@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unrelease] - 2024-11-05
+
+### Added
+- 'check_estimator()' added to the doctests to validate model classes.
+
+### Changed
+- Input/Output validation added to diPLSlib.models and diPLSlib.functions.
+- Changed public to private attributes added in the 'fit()' method.
+- Notebooks adapted.
+- 'demo_ModelSelection_SciKitLearn.ipynb' added.
+- Tests excecuted properly.
+
+### Fixed
+N/A
+
+### Removed
+N/A
+
+### Breaking Changes
+- Changed type of parameter 'l' from Union[int, List[int]] to Union[float, tuple] in  'DIPLS' and 'GCTPLS' classes.
+
 ## [2.2.1] - 2024-11-04
 
 ### Added

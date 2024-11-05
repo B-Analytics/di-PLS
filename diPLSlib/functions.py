@@ -9,6 +9,7 @@ import scipy.spatial.distance as scd
 from scipy.spatial import distance_matrix
 import warnings
 warnings.filterwarnings("ignore")
+from sklearn.utils.validation import check_array
 
 
 def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplacian: bool = False):
@@ -37,9 +38,8 @@ def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplaci
     A : int
         Number of latent variables to use in the model.
 
-    l : Union[int, ndarray]
-        Regularization parameter, which can either be a single float value or an array specifying 
-        a different value for each latent variable.
+    l : float or tuple of len(l)=A
+        Regularization parameter. If a single value is provided, the same regularization is applied to all latent variables.
 
     heuristic : bool, default=False
         If True, automatically determine the regularization parameter to equally balance fitting 
@@ -120,12 +120,13 @@ def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplaci
     >>> y = np.random.random((100, 1))
     >>> xs = np.random.random((50, 10))
     >>> xt = np.random.random((50, 10))
-    >>> b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy = dipals(x, y, xs, xt, 2, [0.1])
+    >>> b, T, Ts, Tt, W, P, Ps, Pt, E, Es, Et, Ey, C, opt_l, discrepancy = dipals(x, y, xs, xt, 2, (0.1))
     """
 
     # Get array dimensions
     (n, k) = np.shape(x)
     (ns, k) = np.shape(xs)
+
     
     # Initialize matrices
     Xt = xt
@@ -164,21 +165,22 @@ def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplaci
     # Compute LVs
     for i in range(A):
 
-        if type(l) is np.ndarray:  # Separate regularization params for each LV
+        if isinstance(l, tuple) and len(l) == A:       # Separate regularization params for each LV
 
             lA = l[i]
 
-        elif(type(l) is int or type(l) is np.float64): # One regularization for all LVs
+        elif isinstance(l, (float, int, np.int64)):              # The same regularization param for each LV
 
             lA = l
 
         else:
 
-            lA = l[0]
+            raise ValueError("The regularization parameter must be either a single value or an A-tuple.")
 
 
         # Compute Domain-Invariant Weight Vector
         w_pls = ((y.T@x)/(y.T@y))  # Ordinary PLS solution
+       
 
 
         if(lA != 0 or heuristic is True):  # In case of regularization
@@ -190,7 +192,7 @@ def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplaci
 
                 # Multiple target domains
                 elif(type(xt) is list):
-
+                    
                     #print('Relaxing domains ... ')
                     ndoms = len(xt)
                     D = np.zeros([k, k])
@@ -332,7 +334,7 @@ def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplaci
 
     else:
 
-        if np.any([i != 0 for i in l]):         # Check if multiple regularization # parameters are passed (one for each LV)
+        if isinstance(l, tuple):                # Check if multiple regularization # parameters are passed (one for each LV)
 
             if target_domain==0:                # Multiple target domains (Domain unknown)
 
@@ -397,6 +399,18 @@ def convex_relaxation(xs, xt):
     >>> xt = np.random.random((100, 10))
     >>> D = convex_relaxation(xs, xt)
     """
+
+    # Ensure input arrays are numerical
+    xs = np.asarray(xs, dtype=np.float64)
+    xt = np.asarray(xt, dtype=np.float64)
+    
+    # Check for NaN or infinite values
+    if not np.all(np.isfinite(xs)) or not np.all(np.isfinite(xt)):
+        raise ValueError("Input arrays must not contain NaN or infinite values. one sample.")
+
+    # Check for complex data
+    if np.iscomplexobj(xs) or np.iscomplexobj(xt):
+        raise ValueError("Complex data not supported.")
     
     # Preliminaries
     ns = np.shape(xs)[0]
