@@ -37,7 +37,7 @@ Train regression model
 from diPLSlib.models import DIPLS
 from diPLSlib.utils import misc
 
-l = [100000] #  Regularization
+l = 100000                    # or l = (10000, 100) Regularization
 m = DIPLS(A=2, l=l)
 m.fit(X, y, X_source, X_target)
 
@@ -53,8 +53,8 @@ err = misc.rmse(y_test, yhat_dipls)
 ```python
 from diPLSlib.models import DIPLS
 
-l = [100000] #  Regularization
-m = DIPLS(A=2, l=l, target_domain=2)
+l = 100000                    # or l = (5, 100, 1000)  Regularization
+m = DIPLS(A=3, l=l, target_domain=2)
 m.fit(X, y, X_source, X_target)
 
 # X_target = [X1, X2, ... , Xk] is a list of target domain data
@@ -66,7 +66,7 @@ m.fit(X, y, X_source, X_target)
 from diPLSlib.models import GCTPLS
 
 # Training
-l = [10] #  Regularization
+l = 10                         # or l = (10, 10) Regularization
 m = GCTPLS(A=2, l=l)
 m.fit(X, y, X_source, X_target)
 
