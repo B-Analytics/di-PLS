@@ -23,6 +23,29 @@ N/A
 ### Breaking Changes
 - Changed type of parameter 'l' from Union[int, List[int]] to Union[float, tuple] in  'DIPLS' and 'GCTPLS' classes.
 
+## [2.3.0] - 2024-11-06
+
+### Added
+- New feature for model selection using cross-validation.
+- Additional unit tests for new features.
+- Documentation for the new model selection feature.
+
+### Changed
+- Refactored code for better readability and maintainability.
+- Updated dependencies to the latest versions.
+
+### Fixed
+- Fixed a bug in the `predict()` method of the `DIPLS` class.
+
+### Removed
+- Deprecated methods removed from `diPLSlib.utils`.
+
+### Breaking Changes
+- Refactored `fit()` method signature in `DIPLS` and `GCTPLS` classes.
+
+[2.3.0]: https://github.com/B-Analytics/di-PLS/releases/tag/v2.3.0
+[2.2.1]: https://github.com/B-Analytics/di-PLS/releases/tag/v2.2.1
+
 ## [2.2.1] - 2024-11-04
 
 ### Added
