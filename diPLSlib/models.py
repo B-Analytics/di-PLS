@@ -287,7 +287,7 @@ class DIPLS(RegressorMixin, BaseEstimator):
         results = algo.dipals(x, y.reshape(-1,1), xs, xt, self.A, self.l, heuristic=self.heuristic, target_domain=self.target_domain)
         self.b_, self.T_, self.Ts_, self.Tt_, self.W_, self.P_, self.Ps_, self.Pt_, self.E_, self.Es_, self.Et_, self.Ey_, self.C_, self.opt_l_, self.discrepancy_ = results
         
-        self.is_fitted_ = True
+        self.is_fitted_ = True        
         return self
 
             
