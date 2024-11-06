@@ -1,6 +1,7 @@
 # Domain-invariant partial least squares regression (di-PLS)
 
 ![](https://img.shields.io/badge/python-3.13-blue.svg)
+![](https://static.pepy.tech/badge/diplslib)
 
 
 Python implementation of (m)di-PLS for domain adaptation in multivariate regression problems. 
