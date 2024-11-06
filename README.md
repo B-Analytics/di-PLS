@@ -58,9 +58,9 @@ m.fit(X, y, X_source, X_target)
 ## Examples
 For more examples, please refer to the [Notebooks](notebooks):
 
-- [Domain adaptation with di-PLS](notebooks/diPLS_example.ipynb)
-- [Including multiple domains (mdi-PLS)](notebooks/mdiPLS_example.ipynb)
-- [Implicit calibration transfer with GCT-PLS](notebooks/GCTPLS_example.ipynb)
+- [Domain adaptation with di-PLS](notebooks/demo_diPLS.ipynb)
+- [Including multiple domains (mdi-PLS)](notebooks/demo_gctPLS.ipynb)
+- [Implicit calibration transfer with GCT-PLS](notebooks/demo_mdiPLS.ipynb)
 - [Model selection with `scikit-learn`](notebooks/demo_ModelSelection_SciKitLearn.ipynb)
 
 # Documentation
