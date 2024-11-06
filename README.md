@@ -12,7 +12,7 @@ Python implementation of (m)di-PLS for domain adaptation in multivariate regress
 pip install diPLSlib
 ```
 
-# Usage 
+# Quick Start
 ## How to apply di-PLS
 Train regression model
 ```python
@@ -54,6 +54,14 @@ m.fit(X, y, X_source, X_target)
 
 # X_source and X_target hold the same samples measured in the source and target domain, respectively.
 ```
+
+## Examples
+For more examples, please refer to the [Notebooks](notebooks):
+
+- [Domain adaptation with di-PLS](notebooks/diPLS_example.ipynb)
+- [Including multiple domains (mdi-PLS)](notebooks/mdiPLS_example.ipynb)
+- [Implicit calibration transfer with GCT-PLS](notebooks/GCTPLS_example.ipynb)
+- [Model selection with `scikit-learn`](notebooks/demo_ModelSelection_SciKitLearn.ipynb)
 
 # Documentation
 The documentation can be found [here](https://di-pls.readthedocs.io/en/latest/diPLSlib.html).
