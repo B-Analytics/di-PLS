@@ -1,4 +1,4 @@
-# Domain-invariant partial least squares regression (di-PLS)
+# diPLSlib: A Python library for domain adaptation in multivariate calibration
 
 ![](https://img.shields.io/badge/python-3.13-blue.svg)
 ![](https://static.pepy.tech/badge/diplslib)
