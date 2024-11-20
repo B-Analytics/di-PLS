@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: diPLSlib
-Version: 2.3.0
+Version: 2.4.0
 Summary: Python package for domain adaptation in multivariate regression
 Home-page: https://github.com/B-Analytics/di-PLS
 Author: Ramin Nikzad-Langerodi
@@ -19,6 +19,7 @@ Requires-Dist: scikit-learn
 # Domain-invariant partial least squares regression (di-PLS)
 
 ![](https://img.shields.io/badge/python-3.13-blue.svg)
+![](https://static.pepy.tech/badge/diplslib)
 
 
 Python implementation of (m)di-PLS for domain adaptation in multivariate regression problems. 
@@ -30,7 +31,7 @@ Python implementation of (m)di-PLS for domain adaptation in multivariate regress
 pip install diPLSlib
 ```
 
-# Usage 
+# Quick Start
 ## How to apply di-PLS
 Train regression model
 ```python
@@ -72,6 +73,14 @@ m.fit(X, y, X_source, X_target)
 
 # X_source and X_target hold the same samples measured in the source and target domain, respectively.
 ```
+
+## Examples
+For more examples, please refer to the [Notebooks](notebooks):
+
+- [Domain adaptation with di-PLS](notebooks/demo_diPLS.ipynb)
+- [Including multiple domains (mdi-PLS)](notebooks/demo_mdiPLS.ipynb)
+- [Implicit calibration transfer with GCT-PLS](notebooks/demo_gctPLS.ipynb)
+- [Model selection with `scikit-learn`](notebooks/demo_ModelSelection_SciKitLearn.ipynb)
 
 # Documentation
 The documentation can be found [here](https://di-pls.readthedocs.io/en/latest/diPLSlib.html).

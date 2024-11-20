@@ -475,3 +475,189 @@ def transfer_laplacian(x: np.ndarray, y: np.ndarray) -> np.ndarray:
 
     return L
 
+
+def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:float=0.05):
+    '''
+    :math:`(\epsilon, \delta)`-Differentially Private Partial Least Squares Regression.
+
+    A Gaussian mechanism according to Dwork et al. (2014) is used to privately release weights :math:`\mathbf{W}`, scores :math:`\mathbf{T}`
+    and :math:`X/Y`-loadings :math:`\mathbf{P}`/:math:`\mathbf{c}` from the PLS1 algorithm. To this end, for each latent variable, i.i.d. noise from 
+    :math:`\mathcal{N}(0,\sigma^2)` with variance
+    
+    .. math::
+        \sigma^2 = \frac{\Delta_2(\cdot)^2 \cdot 2 \ln(1.25/\delta)}{\epsilon^2},
+
+    is added to the weights, scores and loadings, whereas the sensitivity :math:`\Delta_2(\cdot)` for the functions releasing the corresponding quantities is calculated as follows:
+
+    .. math::
+        \Delta_2(w) = \sup_{(\mathbf{X}, \mathbf{y}), (\mathbf{X}', \mathbf{y}')} \|\mathbf{X}^{\mathrm{T}} \mathbf{y} - \mathbf{X}'^{\mathrm{T}} \mathbf{y}'\|_2 \leq \\frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 \cdot \sup_{y} \|y\|_2 + \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \cdot \sup_{y, y'} \|y - y'\|_2 \\right)
+
+    .. math::
+        \Delta_2(t) = \sup_{(\mathbf{X}, \mathbf{w}), (\mathbf{X}', \mathbf{w}')} \|\mathbf{X}\mathbf{w} - \mathbf{X}'\mathbf{w}'\|_2 \leq \\frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 + \\frac{\sigma_w \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \\right)
+
+    .. math::
+        \Delta_2(p) = \sup_{(\mathbf{X}, \mathbf{t}), (\mathbf{X}', \mathbf{t}')} \|\mathbf{X}^{\mathrm{T}} \mathbf{t} - \mathbf{X}'^{\mathrm{T}} \mathbf{t}'\|_2 \leq \\frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 + \\frac{\sigma_t \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \\right)
+
+    .. math::
+        \Delta_2(c) = \sup_{(\mathbf{y}, \mathbf{t}), (\mathbf{y}', \mathbf{t}')} \|\mathbf{y}^{\mathrm{T}} \mathbf{t} - \mathbf{y}'^{\mathrm{T}} \mathbf{t}'\|_2 \leq \\frac{1}{n} \left( \sup_{y, y'} \|y - y'\|_2 + \\frac{\sigma_t \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{y} \|y\|_2 \\right)
+    
+
+    Parameters
+    ----------
+
+    x: numpy array of shape (n, m)
+        x-data
+
+    y: numpy array of shape (n, p)
+
+
+    n_components: int
+        Number of latent variables.
+
+    epsilon: float
+        Privacy loss parameter.
+
+    delta: float, default=0.05
+        Failure probability.
+
+
+    Returns
+    -------
+
+    coef_: numpy array of shape (m,)
+        Regression coefficients.
+
+    x_scores_: numpy array of shape (n, A)
+        X scores.
+
+    x_loadings_: numpy array of shape (m, A)
+        X loadings.
+
+    x_weights_: numpy array of shape (m, A)
+        X weights.
+
+    y_loadings_: numpy array of shape (A, )
+        Y loadings.
+
+    x_residuals: numpy array of shape (n, m)
+        X residuals.
+
+    y_residuals: numpy array of shape (n, p)
+        Y residuals.
+
+    
+    References
+    ----------
+
+    - Dwork, C., & Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.
+
+    Examples
+    --------
+
+    >>> from diPLSlib.functions import edpls
+    >>> import numpy as np
+    >>> x = np.random.rand(100, 10)
+    >>> y = np.random.rand(100, 1)
+    >>> coef_, x_weights_, x_loadings_, y_loadings_, x_scores_, x_residuals_, y_residuals_ = edpls(x, y, 2, epsilon=0.1, delta=0.05)
+    '''
+
+    # Get dimensions of arrays
+    (n_, n_features_) = np.shape(x)
+    I = np.eye(n_features_)
+
+    # Weights
+    x_weights_ = np.zeros([n_features_, n_components])
+
+    # X Scores
+    x_scores_ = np.zeros([n_, n_components])
+
+    # X Loadings
+    x_loadings_ = np.zeros([n_features_, n_components])
+
+    # Y Loadings
+    y_loadings_ = np.zeros([n_components, 1])
+
+    # Iterate over the number of components
+    for i in range(n_components):
+
+        # Compute weights w
+        w_pls = ((y.T@x)/(y.T@y))  
+
+        # Add noise to w
+        x_min = x.min(axis=0)
+        x_max = x.max(axis=0)
+        y_min = y.min(axis=0)
+        y_max = y.max(axis=0)
+        x_norm = np.linalg.norm(x_max - x_min)
+        y_norm = y_max - y_min
+        sensitivity = 1/n_*(x_norm*y_max + np.linalg.norm(x_max)*y_norm)
+        sw = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
+        R = sw**2
+        v = np.random.normal(0, R, n_features_)
+        w = w_pls + v
+
+        # Normalize w
+        w = w / np.linalg.norm(w)
+
+        # Compute x scores and normalize (noise-less)
+        to = x @ w.T
+        to = to / np.linalg.norm(to)
+
+        # Compute x scores and normalize (before adding noise)
+        t = x @ w.T
+        t = t / np.linalg.norm(t)
+
+        # Add noise
+        sensitivity = 1/n_*(x_norm + sw*epsilon/np.sqrt(2*np.log(1.25/delta))*np.linalg.norm(x_max))
+        st = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
+        R = st**2
+        v = np.random.normal(0, R, n_)
+        t = t + v.reshape(n_,1)
+
+        # Compute x loadings (noise-less)
+        po = (to.T@x)/(to.T@to)
+
+        # Compute x loadings (before adding noise)
+        p = (t.T@x)/(t.T@t)
+
+        # Add noise
+        tn = t / np.linalg.norm(t)
+        sensitivity = 1/n_*(x_norm + st*epsilon/np.sqrt(2*np.log(1.25/delta))*np.linalg.norm(x_max))
+        sp = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
+        R = sp**2
+        v = np.random.normal(0, R, n_features_)
+        p = p + v
+
+        # Compute y loadings (noise-less)
+        co = (y.T@to)/(to.T@to)
+
+        # Compute y loadings (before adding noise)
+        c = (y.T@t)/(t.T@t)
+
+        # Add noise
+        sensitivity = 1/n_*(y_norm + st*epsilon/np.sqrt(2*np.log(1.25/delta))*y_max)
+        sc = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
+        R = sc**2
+        v = np.random.normal(0, R, 1)
+        c = c + v
+
+        # Store weights, scores and loadings
+        x_weights_[:, i] = w
+        x_scores_[:, i] = t.reshape(n_)
+        x_loadings_[:, i] = p.reshape(n_features_)
+        y_loadings_[i] = c
+
+        # Deflate x and y
+        x = x - to @ po
+        y = y - to * co
+
+    # Compute regression coefficients
+    coef_ = x_weights_@(np.linalg.inv(x_loadings_.T@x_weights_))@y_loadings_
+
+    # Compute residuals
+    x_residuals_ = x
+    y_residuals_ = y
+
+    return (coef_, x_weights_, x_loadings_, y_loadings_, x_scores_, x_residuals_, y_residuals_ )
+
+

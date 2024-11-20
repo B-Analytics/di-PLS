@@ -16,3 +16,6 @@ build/
 
 # ignore the release notes file
 .release_notes.md
+
+# Ignore the contributing file
+.contributing.md
