@@ -247,17 +247,16 @@ samples in latent variable space.</p>
 and <span class="math notranslate nohighlight">\(X/Y\)</span>-loadings <span class="math notranslate nohighlight">\(\mathbf{P}\)</span>/<span class="math notranslate nohighlight">\(\mathbf{c}\)</span> from the PLS1 algorithm. To this end, for each latent variable, i.i.d. noise from 
 <span class="math notranslate nohighlight">\(\mathcal{N}(0,\sigma^2)\)</span> with variance</p>
 <div class="math notranslate nohighlight">
-\[\sigma^2 = \]</div>
-<p>rac{Delta_2(cdot)^2 cdot 2 ln(1.25/delta)}{epsilon^2},</p>
+\[\sigma^2 = \frac{\Delta_2(\cdot)^2 \cdot 2 \ln(1.25/\delta)}{\epsilon^2},\]</div>
 <p>is added to the weights, scores and loadings, whereas the sensitivity <span class="math notranslate nohighlight">\(\Delta_2(\cdot)\)</span> for the functions releasing the corresponding quantities is calculated as follows:</p>
 <div class="math notranslate nohighlight">
-\[\Delta_2(w) = \sup_{(\mathbf{X}, \mathbf{y}), (\mathbf{X}', \mathbf{y}')} \|\mathbf{X}^{\mathrm{T}} \mathbf{y} - \mathbf{X}'^{\mathrm{T}} \mathbf{y}'\|_2 \leq \frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 \cdot \sup_{y} \|y\|_2 + \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \cdot \sup_{y, y'} \|y - y'\|_2 \right)\]</div>
+\[\Delta_2 w = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \|w(\mathbf{x}, y) - w(\mathbf{x}'y')\|_2 \leq \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \left(\|\mathbf{x} - \mathbf{x}'\|_2 \cdot \|y\| +  \|\mathbf{x}\|_2 \cdot \|y - y'\|\right)\]</div>
 <div class="math notranslate nohighlight">
-\[\Delta_2(t) = \sup_{(\mathbf{X}, \mathbf{w}), (\mathbf{X}', \mathbf{w}')} \|\mathbf{X}\mathbf{w} - \mathbf{X}'\mathbf{w}'\|_2 \leq \frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 + \frac{\sigma_w \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \right)\]</div>
+\[\Delta_2 t = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|t(\mathbf{x}, \mathbf{w}) - t(\mathbf{x}', \mathbf{w}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\right)\]</div>
 <div class="math notranslate nohighlight">
-\[\Delta_2(p) = \sup_{(\mathbf{X}, \mathbf{t}), (\mathbf{X}', \mathbf{t}')} \|\mathbf{X}^{\mathrm{T}} \mathbf{t} - \mathbf{X}'^{\mathrm{T}} \mathbf{t}'\|_2 \leq \frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 + \frac{\sigma_t \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \right)\]</div>
+\[\Delta_2 p = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|p(\mathbf{x}, \mathbf{t}) - t(\mathbf{x}', \mathbf{t}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\right)\]</div>
 <div class="math notranslate nohighlight">
-\[\Delta_2(c) = \sup_{(\mathbf{y}, \mathbf{t}), (\mathbf{y}', \mathbf{t}')} \|\mathbf{y}^{\mathrm{T}} \mathbf{t} - \mathbf{y}'^{\mathrm{T}} \mathbf{t}'\|_2 \leq \frac{1}{n} \left( \sup_{y, y'} \|y - y'\|_2 + \frac{\sigma_t \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{y} \|y\|_2 \right)\]</div>
+\[\Delta_2 c = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|c(\mathbf{t}, y) - t(\mathbf{t}', y')\|_2 \leq \left(2\cdot\sup_{y} \|y\|\right)\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -294,11 +293,11 @@ and <span class="math notranslate nohighlight">\(X/Y\)</span>-loadings <span cla
 <p class="rubric">References</p>
 <ul class="simple">
 <li><p>Dwork, C., &amp; Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.</p></li>
+<li><p>Ramin Nikzad-Langerodi, Du Nguyen Duy, Mohit Kumar and Mathab Alghasi. <span class="math notranslate nohighlight">\((\epsilon, \delta)\)</span>-Differentially Private Partial Least Squares Regression. <em>to appear</em> (2024).</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.functions</span> <span class="kn">import</span> <span class="n">edpls</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">edpls</span> <span class="kn">import</span> <span class="n">edpls</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coef_</span><span class="p">,</span> <span class="n">x_weights_</span><span class="p">,</span> <span class="n">x_loadings_</span><span class="p">,</span> <span class="n">y_loadings_</span><span class="p">,</span> <span class="n">x_scores_</span><span class="p">,</span> <span class="n">x_residuals_</span><span class="p">,</span> <span class="n">y_residuals_</span> <span class="o">=</span> <span class="n">edpls</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
@@ -714,13 +713,13 @@ sub-estimator of a meta-estimator, e.g. used inside a
 <li><p>Dwork, C., &amp; Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.</p></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib</span> <span class="kn">import</span> <span class="n">EDPLS</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.models</span> <span class="kn">import</span> <span class="n">EDPLS</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">EDPLS</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">EDPLS</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="go">EDPLS(A=5, epsilon=0.1, delta=0.05)</span>
+<span class="go">EDPLS(A=5, delta=0.01, epsilon=0.1)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xtest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">yhat</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xtest</span><span class="p">)</span>
 </pre></div>

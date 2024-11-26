@@ -74,6 +74,17 @@ m.fit(X, y, X_source, X_target)
 # X_source and X_target hold the same samples measured in the source and target domain, respectively.
 ```
 
+## How to apply EDPLS
+```python
+from diPLSlib.models import EDPLS
+
+# Training
+epsilon = 1                      # Privacy loss
+delta = 0.05                     # Privacy failure probability of the privacy guarantee
+m = EDPLS(A=2, epsilon=epsilon, delta=delta)
+m.fit(X, y)
+```
+
 ## Examples
 For more examples, please refer to the [Notebooks](notebooks):
 
@@ -81,6 +92,7 @@ For more examples, please refer to the [Notebooks](notebooks):
 - [Including multiple domains (mdi-PLS)](notebooks/demo_mdiPLS.ipynb)
 - [Implicit calibration transfer with GCT-PLS](notebooks/demo_gctPLS.ipynb)
 - [Model selection with `scikit-learn`](notebooks/demo_ModelSelection_SciKitLearn.ipynb)
+- [Privacy-preserving regression with EDPLS](notebooks/demo_edPLS.ipynb)
 
 # Documentation
 The documentation can be found [here](https://di-pls.readthedocs.io/en/latest/diPLSlib.html).
@@ -104,6 +116,8 @@ Knowledge-Based Systems, Volume 210, 2020, https://doi.org/10.1016/j.knosys.2020
 "Partial least squares regression with multiple domains" Journal of Chemometrics 2023 37 (5), e3477, https://doi.org/10.13140/RG.2.2.23750.75845*
 
 - *Ramin Nikzad-Langerodi & Florian Sobieczky (2021). Graph‐based calibration transfer. Journal of Chemometrics, 35(4), e3319. https://doi.org/10.1002/cem.3319*
+
+- *Ramin Nikzad-Langerodi, Du Nguyen Duy and Mathab Alghasi (2024), "(epsilon, delta)-differentially private parital least squares regression", unpublished.*
 
 # Contact us
 Bottleneck Analytics GmbH  

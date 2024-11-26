@@ -767,13 +767,13 @@
 <span class="sd">        </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from diPLSlib import EDPLS</span>
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.models import EDPLS</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; x = np.random.rand(100, 10)</span>
 <span class="sd">    &gt;&gt;&gt; y = np.random.rand(100,1)</span>
-<span class="sd">    &gt;&gt;&gt; model = EDPLS(A=5, epsilon=0.1, delta=0.05)</span>
+<span class="sd">    &gt;&gt;&gt; model = EDPLS(A=5, epsilon=0.1, delta=0.01)</span>
 <span class="sd">    &gt;&gt;&gt; model.fit(x, y)</span>
-<span class="sd">    EDPLS(A=5, epsilon=0.1, delta=0.05)</span>
+<span class="sd">    EDPLS(A=5, delta=0.01, epsilon=0.1)</span>
 <span class="sd">    &gt;&gt;&gt; xtest = np.array([5, 7, 4, 3, 2, 1, 6, 8, 9, 10]).reshape(1, -1)</span>
 <span class="sd">    &gt;&gt;&gt; yhat = model.predict(xtest)</span>
 <span class="sd">    &#39;&#39;&#39;</span>

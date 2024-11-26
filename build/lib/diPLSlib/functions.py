@@ -485,22 +485,23 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
     :math:`\mathcal{N}(0,\sigma^2)` with variance
     
     .. math::
-        \sigma^2 = \frac{\Delta_2(\cdot)^2 \cdot 2 \ln(1.25/\delta)}{\epsilon^2},
+        \sigma^2 = \\frac{\Delta_2(\cdot)^2 \cdot 2 \ln(1.25/\delta)}{\epsilon^2},
 
     is added to the weights, scores and loadings, whereas the sensitivity :math:`\Delta_2(\cdot)` for the functions releasing the corresponding quantities is calculated as follows:
 
     .. math::
-        \Delta_2(w) = \sup_{(\mathbf{X}, \mathbf{y}), (\mathbf{X}', \mathbf{y}')} \|\mathbf{X}^{\mathrm{T}} \mathbf{y} - \mathbf{X}'^{\mathrm{T}} \mathbf{y}'\|_2 \leq \\frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 \cdot \sup_{y} \|y\|_2 + \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \cdot \sup_{y, y'} \|y - y'\|_2 \\right)
+        \Delta_2 w = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \|w(\mathbf{x}, y) - w(\mathbf{x}'y')\|_2 \leq \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \left(\|\mathbf{x} - \mathbf{x}'\|_2 \cdot \|y\| +  \|\mathbf{x}\|_2 \cdot \|y - y'\|\\right)
 
     .. math::
-        \Delta_2(t) = \sup_{(\mathbf{X}, \mathbf{w}), (\mathbf{X}', \mathbf{w}')} \|\mathbf{X}\mathbf{w} - \mathbf{X}'\mathbf{w}'\|_2 \leq \\frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 + \\frac{\sigma_w \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \\right)
+        \Delta_2 t = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|t(\mathbf{x}, \mathbf{w}) - t(\mathbf{x}', \mathbf{w}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)
 
     .. math::
-        \Delta_2(p) = \sup_{(\mathbf{X}, \mathbf{t}), (\mathbf{X}', \mathbf{t}')} \|\mathbf{X}^{\mathrm{T}} \mathbf{t} - \mathbf{X}'^{\mathrm{T}} \mathbf{t}'\|_2 \leq \\frac{1}{n} \left( \sup_{\mathbf{x}, \mathbf{x}'} \|\mathbf{x} - \mathbf{x}'\|_2 + \\frac{\sigma_t \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{\mathbf{x}} \|\mathbf{x}\|_2 \\right)
+        \Delta_2 p = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|p(\mathbf{x}, \mathbf{t}) - t(\mathbf{x}', \mathbf{t}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)
 
     .. math::
-        \Delta_2(c) = \sup_{(\mathbf{y}, \mathbf{t}), (\mathbf{y}', \mathbf{t}')} \|\mathbf{y}^{\mathrm{T}} \mathbf{t} - \mathbf{y}'^{\mathrm{T}} \mathbf{t}'\|_2 \leq \\frac{1}{n} \left( \sup_{y, y'} \|y - y'\|_2 + \\frac{\sigma_t \cdot \epsilon}{\sqrt{2 \ln(1.25/\delta)}} \sup_{y} \|y\|_2 \\right)
+        \Delta_2 c = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|c(\mathbf{t}, y) - t(\mathbf{t}', y')\|_2 \leq \left(2\cdot\sup_{y} \|y\|\\right)
     
+
 
     Parameters
     ----------
@@ -583,6 +584,17 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
         # Compute weights w
         w_pls = ((y.T@x)/(y.T@y))  
 
+        # Normalize w (noise-less)
+        wo = w_pls / np.linalg.norm(w_pls)
+
+        # Compute x scores and normalize (noise-less)
+        to = x @ wo.T
+        to = to / np.linalg.norm(to)
+
+        # Compute x scores and normalize (before adding noise)
+        t = x @ wo.T
+        t = to / np.linalg.norm(to)
+
         # Add noise to w
         x_min = x.min(axis=0)
         x_max = x.max(axis=0)
@@ -590,39 +602,37 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
         y_max = y.max(axis=0)
         x_norm = np.linalg.norm(x_max - x_min)
         y_norm = y_max - y_min
-        sensitivity = 1/n_*(x_norm*y_max + np.linalg.norm(x_max)*y_norm)
+        x_max_norm = np.linalg.norm(x, axis=1).max()
+        
+        #sensitivity = 2*x_max_norm*y_max
+        sensitivity = x_norm*y_max + y_norm*x_max_norm
         sw = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
         R = sw**2
+        
         v = np.random.normal(0, R, n_features_)
-        w = w_pls + v
+        w = wo + v
 
-        # Normalize w
+        # Normalize w (after adding noise)
         w = w / np.linalg.norm(w)
 
-        # Compute x scores and normalize (noise-less)
-        to = x @ w.T
-        to = to / np.linalg.norm(to)
-
-        # Compute x scores and normalize (before adding noise)
-        t = x @ w.T
-        t = t / np.linalg.norm(t)
-
-        # Add noise
-        sensitivity = 1/n_*(x_norm + sw*epsilon/np.sqrt(2*np.log(1.25/delta))*np.linalg.norm(x_max))
+        # Add noise to t
+        sensitivity = 2*x_max_norm
         st = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
         R = st**2
         v = np.random.normal(0, R, n_)
         t = t + v.reshape(n_,1)
 
+        # Normalize t (after adding noise)
+        t = t / np.linalg.norm(t)
+
         # Compute x loadings (noise-less)
         po = (to.T@x)/(to.T@to)
 
         # Compute x loadings (before adding noise)
-        p = (t.T@x)/(t.T@t)
+        p = (to.T@x)/(to.T@to)
 
         # Add noise
-        tn = t / np.linalg.norm(t)
-        sensitivity = 1/n_*(x_norm + st*epsilon/np.sqrt(2*np.log(1.25/delta))*np.linalg.norm(x_max))
+        sensitivity = 2*x_max_norm
         sp = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
         R = sp**2
         v = np.random.normal(0, R, n_features_)
@@ -632,10 +642,10 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
         co = (y.T@to)/(to.T@to)
 
         # Compute y loadings (before adding noise)
-        c = (y.T@t)/(t.T@t)
+        c = (y.T@to)/(to.T@to)
 
         # Add noise
-        sensitivity = 1/n_*(y_norm + st*epsilon/np.sqrt(2*np.log(1.25/delta))*y_max)
+        sensitivity = 2*y_max
         sc = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
         R = sc**2
         v = np.random.normal(0, R, 1)

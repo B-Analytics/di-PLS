@@ -62,7 +62,7 @@ from diPLSlib.models import EDPLS
 
 # Training
 epsilon = 1                      # Privacy loss
-delta = 0.05                     # Privacy failure probability of the privacy guarantee
+delta = 0.05                     # Failure probability of the privacy guarantee
 m = EDPLS(A=2, epsilon=epsilon, delta=delta)
 m.fit(X, y)
 ```
@@ -99,7 +99,7 @@ Knowledge-Based Systems, Volume 210, 2020, https://doi.org/10.1016/j.knosys.2020
 
 - *Ramin Nikzad-Langerodi & Florian Sobieczky (2021). Graph‐based calibration transfer. Journal of Chemometrics, 35(4), e3319. https://doi.org/10.1002/cem.3319*
 
-- *Ramin Nikzad-Langerodi, Du Nguyen Duy and Mathab Alghasi (2024), "(epsilon, delta)-differentially private parital least squares regression", unpublished.*
+- *Ramin Nikzad-Langerodi, Du Nguyen Duy, Mohit Kumar and Mathab Alghasi (2024), "(epsilon, delta)-differentially private parital least squares regression", unpublished.*
 
 # Contact us
 Bottleneck Analytics GmbH  
