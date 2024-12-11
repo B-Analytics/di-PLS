@@ -99,7 +99,7 @@ Knowledge-Based Systems, Volume 210, 2020, https://doi.org/10.1016/j.knosys.2020
 
 - *Ramin Nikzad-Langerodi & Florian Sobieczky (2021). Graph‐based calibration transfer. Journal of Chemometrics, 35(4), e3319. https://doi.org/10.1002/cem.3319*
 
-- *Ramin Nikzad-Langerodi, Du Nguyen Duy, Mohit Kumar and Mathab Alghasi (2024), "(epsilon, delta)-differentially private parital least squares regression", unpublished.*
+- *Ramin Nikzad-Langerodi,  Mohit Kumar, Du Nguyen Duy, and Mahtab Alghasi (2024), "(epsilon, delta)-Differentially Private Partial Least Squares Regression", unpublished.*
 
 # Contact us
 Bottleneck Analytics GmbH  
