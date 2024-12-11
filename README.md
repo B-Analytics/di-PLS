@@ -70,11 +70,11 @@ m.fit(X, y)
 ## Examples
 For more examples, please refer to the [Notebooks](notebooks):
 
-- [Domain adaptation with di-PLS](notebooks/demo_diPLS.ipynb)
-- [Including multiple domains (mdi-PLS)](notebooks/demo_mdiPLS.ipynb)
-- [Implicit calibration transfer with GCT-PLS](notebooks/demo_gctPLS.ipynb)
-- [Model selection with `scikit-learn`](notebooks/demo_ModelSelection_SciKitLearn.ipynb)
-- [Privacy-preserving regression with EDPLS](notebooks/demo_edPLS.ipynb)
+- [Domain adaptation with di-PLS](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_diPLS.ipynb)
+- [Including multiple domains (mdi-PLS)](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_mdiPLS.ipynb)
+- [Implicit calibration transfer with GCT-PLS](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_gctPLS.ipynb)
+- [Model selection with `scikit-learn`](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_ModelSelection_SciKitLearn.ipynb)
+- [Privacy-preserving regression with EDPLS](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_edPLS.ipynb)
 
 # Documentation
 The documentation can be found [here](https://di-pls.readthedocs.io/en/latest/diPLSlib.html).
