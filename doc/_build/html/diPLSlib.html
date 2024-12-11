@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diPLSlib package &mdash; diPLSlib 2.0.0 documentation</title>
+  <title>diPLSlib package &mdash; diPLSlib 2.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/documentation_options.js?v=4d935f96"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -243,20 +243,22 @@ samples in latent variable space.</p>
 <dt class="sig sig-object py" id="diPLSlib.functions.edpls">
 <span class="sig-prename descclassname"><span class="pre">diPLSlib.functions.</span></span><span class="sig-name descname"><span class="pre">edpls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/functions.html#edpls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.functions.edpls" title="Link to this definition"></a></dt>
 <dd><p><span class="math notranslate nohighlight">\((\epsilon, \delta)\)</span>-Differentially Private Partial Least Squares Regression.</p>
-<p>A Gaussian mechanism according to Dwork et al. (2014) is used to privately release weights <span class="math notranslate nohighlight">\(\mathbf{W}\)</span>, scores <span class="math notranslate nohighlight">\(\mathbf{T}\)</span>
+<p>A Gaussian mechanism according to Balle &amp; Wang (2018) is used to privately release weights <span class="math notranslate nohighlight">\(\mathbf{W}\)</span>, scores <span class="math notranslate nohighlight">\(\mathbf{T}\)</span>
 and <span class="math notranslate nohighlight">\(X/Y\)</span>-loadings <span class="math notranslate nohighlight">\(\mathbf{P}\)</span>/<span class="math notranslate nohighlight">\(\mathbf{c}\)</span> from the PLS1 algorithm. To this end, for each latent variable, i.i.d. noise from 
-<span class="math notranslate nohighlight">\(\mathcal{N}(0,\sigma^2)\)</span> with variance</p>
+<span class="math notranslate nohighlight">\(\mathcal{N}(0,\sigma^2)\)</span> with variance satisfying</p>
 <div class="math notranslate nohighlight">
-\[\sigma^2 = \frac{\Delta_2(\cdot)^2 \cdot 2 \ln(1.25/\delta)}{\epsilon^2},\]</div>
-<p>is added to the weights, scores and loadings, whereas the sensitivity <span class="math notranslate nohighlight">\(\Delta_2(\cdot)\)</span> for the functions releasing the corresponding quantities is calculated as follows:</p>
+\[\Phi\left( \frac{\Delta}{2\sigma} - \frac{\epsilon\sigma}{\Delta} \right) - e^{\epsilon} \Phi\left( -\frac{\Delta}{2\sigma} - \frac{\epsilon\sigma}{\Delta} \right)\leq \delta,\]</div>
+<p>with <span class="math notranslate nohighlight">\(\Phi(t) = \mathrm P[\mathcal{N}(0,1)\leq t]\)</span> (i.e., the CDF of the standard univariate Gaussian distribution), is added to the weights, scores and loadings, whereas the sensitivity <span class="math notranslate nohighlight">\(\Delta(\cdot)\)</span> for the functions releasing the corresponding quantities is calculated as follows:</p>
 <div class="math notranslate nohighlight">
-\[\Delta_2 w = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \|w(\mathbf{x}, y) - w(\mathbf{x}'y')\|_2 \leq \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \left(\|\mathbf{x} - \mathbf{x}'\|_2 \cdot \|y\| +  \|\mathbf{x}\|_2 \cdot \|y - y'\|\right)\]</div>
+\[\Delta(w) = \sup_{(\mathbf{x}, y)} |y| \|\mathbf{x}\|_2\]</div>
 <div class="math notranslate nohighlight">
-\[\Delta_2 t = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|t(\mathbf{x}, \mathbf{w}) - t(\mathbf{x}', \mathbf{w}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\right)\]</div>
+\[\Delta(t) \leq \sup_{\mathbf{x}}  \|\mathbf{x}\|_2\]</div>
 <div class="math notranslate nohighlight">
-\[\Delta_2 p = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|p(\mathbf{x}, \mathbf{t}) - t(\mathbf{x}', \mathbf{t}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\right)\]</div>
+\[\Delta(p) \leq \sup_{\mathbf{x}}  \|\mathbf{x}\|_2\]</div>
 <div class="math notranslate nohighlight">
-\[\Delta_2 c = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|c(\mathbf{t}, y) - t(\mathbf{t}', y')\|_2 \leq \left(2\cdot\sup_{y} \|y\|\right)\]</div>
+\[\Delta(c) \leq \sup_{y}  |y|.\]</div>
+<p>Note that in contrast to the Gaussian mechanism, proposed in Dwork et al. (2006) and Dwork et al. (2014), the mechanism of Balle &amp; Wang (2018) guarantees <span class="math notranslate nohighlight">\((\epsilon, \delta)\)</span>-differential privacy 
+for any value of <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span> and not only for <span class="math notranslate nohighlight">\(\epsilon \leq 1\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -292,8 +294,8 @@ and <span class="math notranslate nohighlight">\(X/Y\)</span>-loadings <span cla
 </dl>
 <p class="rubric">References</p>
 <ul class="simple">
-<li><p>Dwork, C., &amp; Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.</p></li>
-<li><p>Ramin Nikzad-Langerodi, Du Nguyen Duy, Mohit Kumar and Mathab Alghasi. <span class="math notranslate nohighlight">\((\epsilon, \delta)\)</span>-Differentially Private Partial Least Squares Regression. <em>to appear</em> (2024).</p></li>
+<li><p>R.Nikzad-Langerodi, et al. (2024). (epsilon,delta)-Differentially private partial least squares regression (2024, unpublished).</p></li>
+<li><p>Balle, B., &amp; Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.functions</span> <span class="kn">import</span> <span class="n">edpls</span>
@@ -709,8 +711,8 @@ sub-estimator of a meta-estimator, e.g. used inside a
 </table>
 <p class="rubric">References</p>
 <ul class="simple">
-<li><p>R.Nikzad-Langerodi, et al. (2024). Differentially private partial least squares regression. Unpublished manuscript.</p></li>
-<li><p>Dwork, C., &amp; Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.</p></li>
+<li><p>R.Nikzad-Langerodi, et al. (2024). (epsilon,delta)-Differentially private partial least squares regression (2024, unpublished).</p></li>
+<li><p>Balle, B., &amp; Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.models</span> <span class="kn">import</span> <span class="n">EDPLS</span>
@@ -1100,6 +1102,7 @@ sub-estimator of a meta-estimator, e.g. used inside a
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="diPLSlib.utils.html">diPLSlib.utils subpackage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="diPLSlib.utils.html#module-diPLSlib.utils.misc">diPLSlib.utils.misc module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="diPLSlib.utils.html#diPLSlib.utils.misc.calibrateAnalyticGaussianMechanism"><code class="docutils literal notranslate"><span class="pre">calibrateAnalyticGaussianMechanism()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="diPLSlib.utils.html#diPLSlib.utils.misc.gengaus"><code class="docutils literal notranslate"><span class="pre">gengaus()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="diPLSlib.utils.html#diPLSlib.utils.misc.hellipse"><code class="docutils literal notranslate"><span class="pre">hellipse()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="diPLSlib.utils.html#diPLSlib.utils.misc.rmse"><code class="docutils literal notranslate"><span class="pre">rmse()</span></code></a></li>

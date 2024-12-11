@@ -10,6 +10,7 @@ from scipy.spatial import distance_matrix
 import warnings
 warnings.filterwarnings("ignore")
 from sklearn.utils.validation import check_array
+from diPLSlib.utils.misc import calibrateAnalyticGaussianMechanism
 
 
 def dipals(x, y, xs, xt, A, l, heuristic: bool = False, target_domain=0, laplacian: bool = False):
@@ -490,18 +491,18 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
     is added to the weights, scores and loadings, whereas the sensitivity :math:`\Delta_2(\cdot)` for the functions releasing the corresponding quantities is calculated as follows:
 
     .. math::
-        \Delta_2 w = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \|w(\mathbf{x}, y) - w(\mathbf{x}'y')\|_2 \leq \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \left(\|\mathbf{x} - \mathbf{x}'\|_2 \cdot \|y\| +  \|\mathbf{x}\|_2 \cdot \|y - y'\|\\right)
+        \Delta_2(w) = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \|w(\mathbf{x}, y) - w(\mathbf{x}'y')\|_2 \leq \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \left(\|\mathbf{x} - \mathbf{x}'\|_2 \cdot \|y\| +  \|\mathbf{x}\|_2 \cdot \|y - y'\|\\right)
 
     .. math::
-        \Delta_2 t = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|t(\mathbf{x}, \mathbf{w}) - t(\mathbf{x}', \mathbf{w}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)
+        \Delta_2(t) = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|t(\mathbf{x}, \mathbf{w}) - t(\mathbf{x}', \mathbf{w}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)
 
     .. math::
-        \Delta_2 p = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|p(\mathbf{x}, \mathbf{t}) - t(\mathbf{x}', \mathbf{t}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)
+        \Delta_2(p) = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|p(\mathbf{x}, \mathbf{t}) - t(\mathbf{x}', \mathbf{t}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)
 
     .. math::
-        \Delta_2 c = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|c(\mathbf{t}, y) - t(\mathbf{t}', y')\|_2 \leq \left(2\cdot\sup_{y} \|y\|\\right)
+        \Delta_2(t) = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|c(\mathbf{t}, y) - t(\mathbf{t}', y')\|_2 \leq \left(2\cdot\sup_{y} \|y\|\\right)
     
-
+    
 
     Parameters
     ----------
@@ -551,6 +552,7 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
     ----------
 
     - Dwork, C., & Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.
+    - Balle, B., & Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.
 
     Examples
     --------
@@ -561,6 +563,7 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
     >>> y = np.random.rand(100, 1)
     >>> coef_, x_weights_, x_loadings_, y_loadings_, x_scores_, x_residuals_, y_residuals_ = edpls(x, y, 2, epsilon=0.1, delta=0.05)
     '''
+
 
     # Get dimensions of arrays
     (n_, n_features_) = np.shape(x)
@@ -604,10 +607,8 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
         y_norm = y_max - y_min
         x_max_norm = np.linalg.norm(x, axis=1).max()
         
-        #sensitivity = 2*x_max_norm*y_max
-        sensitivity = x_norm*y_max + y_norm*x_max_norm
-        sw = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
-        R = sw**2
+        sensitivity = x_max_norm*y_max
+        R = calibrateAnalyticGaussianMechanism(epsilon, delta, sensitivity)**2
         
         v = np.random.normal(0, R, n_features_)
         w = wo + v
@@ -616,9 +617,8 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
         w = w / np.linalg.norm(w)
 
         # Add noise to t
-        sensitivity = 2*x_max_norm
-        st = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
-        R = st**2
+        sensitivity = x_max_norm
+        R = calibrateAnalyticGaussianMechanism(epsilon, delta, sensitivity)**2
         v = np.random.normal(0, R, n_)
         t = t + v.reshape(n_,1)
 
@@ -632,9 +632,9 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
         p = (to.T@x)/(to.T@to)
 
         # Add noise
-        sensitivity = 2*x_max_norm
-        sp = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
-        R = sp**2
+        #sensitivity = 2*x_max_norm
+        sensitivity = x_max_norm
+        R = calibrateAnalyticGaussianMechanism(epsilon, delta, sensitivity)**2
         v = np.random.normal(0, R, n_features_)
         p = p + v
 
@@ -645,9 +645,8 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
         c = (y.T@to)/(to.T@to)
 
         # Add noise
-        sensitivity = 2*y_max
-        sc = sensitivity*np.sqrt(2*np.log(1.25/delta))/epsilon
-        R = sc**2
+        sensitivity = y_max
+        R = calibrateAnalyticGaussianMechanism(epsilon, delta, sensitivity)**2
         v = np.random.normal(0, R, 1)
         c = c + v
 

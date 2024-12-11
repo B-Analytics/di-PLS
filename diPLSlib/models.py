@@ -672,11 +672,9 @@ class EDPLS(DIPLS):
     References
     ----------
 
-    - R.Nikzad-Langerodi, et al. (2024). Differentially private partial least squares regression. Unpublished manuscript.
-    
-    - Dwork, C., & Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.
+    - R.Nikzad-Langerodi, et al. (2024). (epsilon,delta)-Differentially private partial least squares regression (2024, unpublished).
+    - Balle, B., & Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.
 
-        
     Examples
     --------
     >>> from diPLSlib.models import EDPLS

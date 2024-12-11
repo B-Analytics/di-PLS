@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diPLSlib.utils subpackage &mdash; diPLSlib 2.0.0 documentation</title>
+  <title>diPLSlib.utils subpackage &mdash; diPLSlib 2.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/documentation_options.js?v=4d935f96"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -89,6 +89,42 @@
 <section id="module-diPLSlib.utils.misc">
 <span id="diplslib-utils-misc-module"></span><h2>diPLSlib.utils.misc module<a class="headerlink" href="#module-diPLSlib.utils.misc" title="Link to this heading"></a></h2>
 <p>Some helper functions for diPLSlib</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="diPLSlib.utils.misc.calibrateAnalyticGaussianMechanism">
+<span class="sig-prename descclassname"><span class="pre">diPLSlib.utils.misc.</span></span><span class="sig-name descname"><span class="pre">calibrateAnalyticGaussianMechanism</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/utils/misc.html#calibrateAnalyticGaussianMechanism"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.utils.misc.calibrateAnalyticGaussianMechanism" title="Link to this definition"></a></dt>
+<dd><p>Calibrate a Gaussian perturbation for differential privacy using the analytic Gaussian mechanism of [Balle and Wang, ICML’18]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>epsilon</strong><span class="classifier">float</span></dt><dd><p>Privacy parameter epsilon</p>
+</dd>
+<dt><strong>delta</strong><span class="classifier">float</span></dt><dd><p>Desired privacy failure probability</p>
+</dd>
+<dt><strong>GS</strong><span class="classifier">float</span></dt><dd><p>Upper bound on the L2-sensitivity of the function to which the mechanism is applied</p>
+</dd>
+<dt><strong>tol</strong><span class="classifier">float</span></dt><dd><p>Error tolerance for binary search</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>sigma</strong><span class="classifier">float</span></dt><dd><p>Standard deviation of Gaussian noise needed to achieve (epsilon,delta)-DP under global sensitivity GS</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Balle, B., &amp; Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">diPLSlib.utils.misc</span> <span class="kn">import</span> <span class="n">calibrateAnalyticGaussianMechanism</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calibrateAnalyticGaussianMechanism</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="go">3.730631634944469</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="diPLSlib.utils.misc.gengaus">
 <span class="sig-prename descclassname"><span class="pre">diPLSlib.utils.misc.</span></span><span class="sig-name descname"><span class="pre">gengaus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/utils/misc.html#gengaus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.utils.misc.gengaus" title="Link to this definition"></a></dt>

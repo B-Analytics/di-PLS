@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diPLSlib.functions &mdash; diPLSlib 2.0.0 documentation</title>
+  <title>diPLSlib.functions &mdash; diPLSlib 2.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/documentation_options.js?v=4d935f96"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -81,6 +81,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">diPLSlib.utils.misc</span> <span class="kn">import</span> <span class="n">calibrateAnalyticGaussianMechanism</span>
 
 
 <div class="viewcode-block" id="dipals">
@@ -562,28 +563,29 @@
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    :math:`(\epsilon, \delta)`-Differentially Private Partial Least Squares Regression.</span>
 
-<span class="sd">    A Gaussian mechanism according to Dwork et al. (2014) is used to privately release weights :math:`\mathbf{W}`, scores :math:`\mathbf{T}`</span>
+<span class="sd">    A Gaussian mechanism according to Balle &amp; Wang (2018) is used to privately release weights :math:`\mathbf{W}`, scores :math:`\mathbf{T}`</span>
 <span class="sd">    and :math:`X/Y`-loadings :math:`\mathbf{P}`/:math:`\mathbf{c}` from the PLS1 algorithm. To this end, for each latent variable, i.i.d. noise from </span>
-<span class="sd">    :math:`\mathcal{N}(0,\sigma^2)` with variance</span>
+<span class="sd">    :math:`\mathcal{N}(0,\sigma^2)` with variance satisfying</span>
 <span class="sd">    </span>
 <span class="sd">    .. math::</span>
-<span class="sd">        \sigma^2 = \\frac{\Delta_2(\cdot)^2 \cdot 2 \ln(1.25/\delta)}{\epsilon^2},</span>
+<span class="sd">           \Phi\left( \\frac{\Delta}{2\sigma} - \\frac{\epsilon\sigma}{\Delta} \\right) - e^{\epsilon} \Phi\left( -\\frac{\Delta}{2\sigma} - \\frac{\epsilon\sigma}{\Delta} \\right)\leq \delta,</span>
 
-<span class="sd">    is added to the weights, scores and loadings, whereas the sensitivity :math:`\Delta_2(\cdot)` for the functions releasing the corresponding quantities is calculated as follows:</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \Delta_2 w = \sup_{(\mathbf{x}, y), (\mathbf{x}&#39;, y&#39;)} \|w(\mathbf{x}, y) - w(\mathbf{x}&#39;y&#39;)\|_2 \leq \sup_{(\mathbf{x}, y), (\mathbf{x}&#39;, y&#39;)} \left(\|\mathbf{x} - \mathbf{x}&#39;\|_2 \cdot \|y\| +  \|\mathbf{x}\|_2 \cdot \|y - y&#39;\|\\right)</span>
+<span class="sd">    with :math:`\Phi(t) = \mathrm P[\mathcal{N}(0,1)\leq t]` (i.e., the CDF of the standard univariate Gaussian distribution), is added to the weights, scores and loadings, whereas the sensitivity :math:`\Delta(\cdot)` for the functions releasing the corresponding quantities is calculated as follows:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \Delta_2 t = \sup_{(\mathbf{x}, y), (\mathbf{x}&#39;, y&#39;)}  \|t(\mathbf{x}, \mathbf{w}) - t(\mathbf{x}&#39;, \mathbf{w}&#39;)\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)</span>
+<span class="sd">        \Delta(w) = \sup_{(\mathbf{x}, y)} |y| \|\mathbf{x}\|_2</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \Delta_2 p = \sup_{(\mathbf{x}, y), (\mathbf{x}&#39;, y&#39;)}  \|p(\mathbf{x}, \mathbf{t}) - t(\mathbf{x}&#39;, \mathbf{t}&#39;)\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)</span>
+<span class="sd">        \Delta(t) \leq \sup_{\mathbf{x}}  \|\mathbf{x}\|_2</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \Delta_2 c = \sup_{(\mathbf{x}, y), (\mathbf{x}&#39;, y&#39;)}  \|c(\mathbf{t}, y) - t(\mathbf{t}&#39;, y&#39;)\|_2 \leq \left(2\cdot\sup_{y} \|y\|\\right)</span>
+<span class="sd">        \Delta(p) \leq \sup_{\mathbf{x}}  \|\mathbf{x}\|_2</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \Delta(c) \leq \sup_{y}  |y|.</span>
 <span class="sd">    </span>
-
+<span class="sd">    Note that in contrast to the Gaussian mechanism, proposed in Dwork et al. (2006) and Dwork et al. (2014), the mechanism of Balle &amp; Wang (2018) guarantees :math:`(\epsilon, \delta)`-differential privacy </span>
+<span class="sd">    for any value of :math:`\epsilon &gt; 0` and not only for :math:`\epsilon \leq 1`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -632,9 +634,9 @@
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 
-<span class="sd">    - Dwork, C., &amp; Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.</span>
-<span class="sd">    - Ramin Nikzad-Langerodi, Du Nguyen Duy, Mohit Kumar and Mathab Alghasi. :math:`(\epsilon, \delta)`-Differentially Private Partial Least Squares Regression. *to appear* (2024).</span>
-<span class="sd">    </span>
+<span class="sd">    - R.Nikzad-Langerodi, et al. (2024). (epsilon,delta)-Differentially private partial least squares regression (2024, unpublished).</span>
+<span class="sd">    - Balle, B., &amp; Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
@@ -644,6 +646,7 @@
 <span class="sd">    &gt;&gt;&gt; y = np.random.rand(100, 1)</span>
 <span class="sd">    &gt;&gt;&gt; coef_, x_weights_, x_loadings_, y_loadings_, x_scores_, x_residuals_, y_residuals_ = edpls(x, y, 2, epsilon=0.1, delta=0.05)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
 
     <span class="c1"># Get dimensions of arrays</span>
     <span class="p">(</span><span class="n">n_</span><span class="p">,</span> <span class="n">n_features_</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -687,10 +690,8 @@
         <span class="n">y_norm</span> <span class="o">=</span> <span class="n">y_max</span> <span class="o">-</span> <span class="n">y_min</span>
         <span class="n">x_max_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
         
-        <span class="c1">#sensitivity = 2*x_max_norm*y_max</span>
-        <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">x_norm</span><span class="o">*</span><span class="n">y_max</span> <span class="o">+</span> <span class="n">y_norm</span><span class="o">*</span><span class="n">x_max_norm</span>
-        <span class="n">sw</span> <span class="o">=</span> <span class="n">sensitivity</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.25</span><span class="o">/</span><span class="n">delta</span><span class="p">))</span><span class="o">/</span><span class="n">epsilon</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">sw</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">x_max_norm</span><span class="o">*</span><span class="n">y_max</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">calibrateAnalyticGaussianMechanism</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         
         <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">n_features_</span><span class="p">)</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">wo</span> <span class="o">+</span> <span class="n">v</span>
@@ -699,9 +700,8 @@
         <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
         <span class="c1"># Add noise to t</span>
-        <span class="n">sensitivity</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x_max_norm</span>
-        <span class="n">st</span> <span class="o">=</span> <span class="n">sensitivity</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.25</span><span class="o">/</span><span class="n">delta</span><span class="p">))</span><span class="o">/</span><span class="n">epsilon</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">st</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">x_max_norm</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">calibrateAnalyticGaussianMechanism</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">n_</span><span class="p">)</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 
@@ -715,9 +715,9 @@
         <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">T</span><span class="nd">@x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">T</span><span class="nd">@to</span><span class="p">)</span>
 
         <span class="c1"># Add noise</span>
-        <span class="n">sensitivity</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x_max_norm</span>
-        <span class="n">sp</span> <span class="o">=</span> <span class="n">sensitivity</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.25</span><span class="o">/</span><span class="n">delta</span><span class="p">))</span><span class="o">/</span><span class="n">epsilon</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">sp</span><span class="o">**</span><span class="mi">2</span>
+        <span class="c1">#sensitivity = 2*x_max_norm</span>
+        <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">x_max_norm</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">calibrateAnalyticGaussianMechanism</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">n_features_</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">v</span>
 
@@ -728,9 +728,8 @@
         <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="nd">@to</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">T</span><span class="nd">@to</span><span class="p">)</span>
 
         <span class="c1"># Add noise</span>
-        <span class="n">sensitivity</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">y_max</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="n">sensitivity</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.25</span><span class="o">/</span><span class="n">delta</span><span class="p">))</span><span class="o">/</span><span class="n">epsilon</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">sc</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">y_max</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">calibrateAnalyticGaussianMechanism</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">v</span>
 
