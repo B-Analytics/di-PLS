@@ -5,6 +5,8 @@ Some helper functions for diPLSlib
 import numpy as np
 from scipy.stats import norm 
 from scipy.stats import f
+from math import exp, sqrt
+from scipy.special import erf
 
 def gengaus(length, mu, sigma, mag, noise=0):
     """
@@ -144,3 +146,92 @@ def rmse(y, yhat):
     """
 
     return np.sqrt(((y.ravel()-yhat.ravel())**2).mean())
+
+
+def calibrateAnalyticGaussianMechanism(epsilon, delta, GS, tol = 1.e-12):
+    """ 
+    Calibrate a Gaussian perturbation for differential privacy using the analytic Gaussian mechanism of [Balle and Wang, ICML'18]
+
+    Parameters
+    ----------
+    epsilon : float
+        Privacy parameter epsilon
+
+    delta : float
+        Desired privacy failure probability
+
+    GS : float
+        Upper bound on the L2-sensitivity of the function to which the mechanism is applied
+
+    tol : float
+        Error tolerance for binary search
+
+
+    Returns
+    -------
+    sigma : float
+        Standard deviation of Gaussian noise needed to achieve (epsilon,delta)-DP under global sensitivity GS
+
+    References
+    ----------
+    - Balle, B., & Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.
+
+    Examples
+    --------
+    >>> from diPLSlib.utils.misc import calibrateAnalyticGaussianMechanism
+    >>> calibrateAnalyticGaussianMechanism(1.0, 1e-5, 1.0)
+    3.730631634944469
+    """
+
+    def Phi(t):
+        return 0.5*(1.0 + erf(float(t)/sqrt(2.0)))
+
+    def caseA(epsilon,s):
+        return Phi(sqrt(epsilon*s)) - exp(epsilon)*Phi(-sqrt(epsilon*(s+2.0)))
+
+    def caseB(epsilon,s):
+        return Phi(-sqrt(epsilon*s)) - exp(epsilon)*Phi(-sqrt(epsilon*(s+2.0)))
+
+    def doubling_trick(predicate_stop, s_inf, s_sup):
+        while(not predicate_stop(s_sup)):
+            s_inf = s_sup
+            s_sup = 2.0*s_inf
+        return s_inf, s_sup
+
+    def binary_search(predicate_stop, predicate_left, s_inf, s_sup):
+        s_mid = s_inf + (s_sup-s_inf)/2.0
+        while(not predicate_stop(s_mid)):
+            if (predicate_left(s_mid)):
+                s_sup = s_mid
+            else:
+                s_inf = s_mid
+            s_mid = s_inf + (s_sup-s_inf)/2.0
+        return s_mid
+
+    delta_thr = caseA(epsilon, 0.0)
+
+    if (delta == delta_thr):
+        alpha = 1.0
+
+    else:
+        if (delta > delta_thr):
+            predicate_stop_DT = lambda s : caseA(epsilon, s) >= delta
+            function_s_to_delta = lambda s : caseA(epsilon, s)
+            predicate_left_BS = lambda s : function_s_to_delta(s) > delta
+            function_s_to_alpha = lambda s : sqrt(1.0 + s/2.0) - sqrt(s/2.0)
+
+        else:
+            predicate_stop_DT = lambda s : caseB(epsilon, s) <= delta
+            function_s_to_delta = lambda s : caseB(epsilon, s)
+            predicate_left_BS = lambda s : function_s_to_delta(s) < delta
+            function_s_to_alpha = lambda s : sqrt(1.0 + s/2.0) + sqrt(s/2.0)
+
+        predicate_stop_BS = lambda s : abs(function_s_to_delta(s) - delta) <= tol
+
+        s_inf, s_sup = doubling_trick(predicate_stop_DT, 0.0, 1.0)
+        s_final = binary_search(predicate_stop_BS, predicate_left_BS, s_inf, s_sup)
+        alpha = function_s_to_alpha(s_final)
+        
+    sigma = alpha*GS/sqrt(2.0*epsilon)
+
+    return sigma

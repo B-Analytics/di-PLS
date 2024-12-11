@@ -610,3 +610,200 @@ class GCTPLS(DIPLS):
         self.is_fitted_ = True  # Set the is_fitted attribute to True
         return self
 
+
+class EDPLS(DIPLS):
+    '''
+
+    :math:`(\epsilon, \delta)`-Differentially Private Partial Least Squares Regression.
+
+
+    This class implements the  :math:`(\epsilon, \delta)`-Differentially Private Partial Least Squares (PLS) regression method by Nikzad-Langerodi et al. (2024, unpublished).
+
+    Parameters
+    ----------
+    
+    A: int
+        Number of latent variables.
+    
+    epsilon : float
+        Privacy loss parameter.
+
+    delta : float, default=0.05
+        Failure probability.
+
+    centering : bool, default=True
+            If True, the data will be centered before fitting the model.
+
+    
+    Attributes
+    ----------
+
+    n_: int
+        Number of samples in the training data.
+
+    n_features_: int
+        Number of features in the training data.
+
+    x_mean_: array, shape (n_features,)
+        Estimated mean of each feature.
+
+    coef_: array, shape (n_features,)
+        Estimated regression coefficients.
+
+    y_mean_: float
+        Estimated intercept.
+
+    x_scores_: array, shape (n, A)
+        X scores.
+
+    x_loadings_: array, shape (n_features, A)
+        X loadings.
+
+    x_weights_: array, shape (n_features, A)
+        X weights.
+
+    y_loadings_: array, shape (n_features, A)
+        Y loadings.
+
+    is_fitted_: bool
+        True if the model has been fitted.
+
+
+    References
+    ----------
+
+    - R.Nikzad-Langerodi, et al. (2024). (epsilon,delta)-Differentially private partial least squares regression (2024, unpublished).
+    - Balle, B., & Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.
+
+    Examples
+    --------
+    >>> from diPLSlib.models import EDPLS
+    >>> import numpy as np
+    >>> x = np.random.rand(100, 10)
+    >>> y = np.random.rand(100,1)
+    >>> model = EDPLS(A=5, epsilon=0.1, delta=0.01)
+    >>> model.fit(x, y)
+    EDPLS(A=5, delta=0.01, epsilon=0.1)
+    >>> xtest = np.array([5, 7, 4, 3, 2, 1, 6, 8, 9, 10]).reshape(1, -1)
+    >>> yhat = model.predict(xtest)
+    '''
+
+    def __init__(self, A:int, epsilon:float, delta:float=0.05, centering:bool=True):
+        # Model parameters
+        self.A = A
+        self.epsilon = epsilon
+        self.delta = delta
+        self.centering = centering
+        self.is_fitted_ = False
+
+
+    def fit(self, X:np.ndarray, y:np.ndarray):
+        '''
+        Fit the EDPLS model.
+
+        Parameters
+        ----------
+        X : array, shape (n_samples, n_features)
+            Training data.
+
+        y : array, shape (n_samples,)
+            Target values.
+
+        Returns
+        -------
+
+        self : object
+           Fitted model instance.
+
+        '''
+
+        ### Validate input data
+        # Check for sparse input
+        if issparse(X):
+
+            raise ValueError("Sparse input is not supported. Please convert your data to dense format.")
+ 
+        # Validate input arrays
+        X, y = check_X_y(X, y, ensure_2d=True, allow_nd=False, accept_large_sparse=False, accept_sparse=False, force_all_finite=True)
+         
+        # Flatten y to 1D array
+        y = np.ravel(y)
+
+        # Check for complex entries
+        if np.iscomplexobj(X) or np.iscomplexobj(y):
+            
+            raise ValueError("Complex data not supported")
+        
+        
+        ### Preliminaries
+        self.n_, self.n_features_in_ = X.shape
+        self.x_ = X
+        self.y_ = y
+        self.y_mean_= np.mean(self.y_)
+
+        # Mean centering
+        if self.centering:
+
+            self.x_mean_ = np.mean(self.x_, axis=0)
+            self.x_ = self.x_ - self.x_mean_
+            y = self.y_ - self.y_mean_
+
+        else:
+
+            y = self.y_
+
+
+        x = self.x_ 
+
+        ### Fit model
+        results = algo.edpls(x, y.reshape(-1,1), self.A, epsilon=self.epsilon, delta=self.delta)
+        self.coef_, self.x_weights_, self.x_loadings_, self.y_loadings_, self.x_scores_, self.x_residuals_, self.y_residuals_  = results
+
+        self.is_fitted_ = True 
+
+        return self
+    
+    
+    def predict(self, x:np.ndarray):
+        """
+        Predict y using the fitted EDPLS model.
+
+        Parameters
+
+        ----------
+
+        x: numpy array of shape (n_samples_test, n_features)
+            Test data matrix to perform the prediction on.
+
+        Returns
+        -------
+
+        yhat: numpy array of shape (n_samples_test, )
+            Predicted response values for the test data.
+
+
+        """
+        
+        # Check if the model has been fitted
+        if not hasattr(self, 'is_fitted_') or not self.is_fitted_:
+            raise NotFittedError("This DIPLS instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.")
+        
+        
+        # Check for sparse input
+        if issparse(x):
+            raise ValueError("Sparse input is not supported. Please convert your data to dense format.")
+
+        # Validate input array
+        x = check_array(x, ensure_2d=True, allow_nd=False, force_all_finite=True)
+
+
+        # Center and scale x
+        if self.centering is True:
+            x = x[...,:] - self.x_mean_
+
+
+        # Predict y
+        yhat = x@self.coef_ + self.y_mean_
+
+
+        return yhat

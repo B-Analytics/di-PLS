@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diPLSlib.models &mdash; diPLSlib 2.0.0 documentation</title>
+  <title>diPLSlib.models &mdash; diPLSlib 2.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../_static/documentation_options.js?v=4d935f96"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -695,6 +695,212 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 </div>
 
+
+
+<div class="viewcode-block" id="EDPLS">
+<a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.models.EDPLS">[docs]</a>
+<span class="k">class</span> <span class="nc">EDPLS</span><span class="p">(</span><span class="n">DIPLS</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    :math:`(\epsilon, \delta)`-Differentially Private Partial Least Squares Regression.</span>
+
+
+<span class="sd">    This class implements the  :math:`(\epsilon, \delta)`-Differentially Private Partial Least Squares (PLS) regression method by Nikzad-Langerodi et al. (2024, unpublished).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    A: int</span>
+<span class="sd">        Number of latent variables.</span>
+<span class="sd">    </span>
+<span class="sd">    epsilon : float</span>
+<span class="sd">        Privacy loss parameter.</span>
+
+<span class="sd">    delta : float, default=0.05</span>
+<span class="sd">        Failure probability.</span>
+
+<span class="sd">    centering : bool, default=True</span>
+<span class="sd">            If True, the data will be centered before fitting the model.</span>
+
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    n_: int</span>
+<span class="sd">        Number of samples in the training data.</span>
+
+<span class="sd">    n_features_: int</span>
+<span class="sd">        Number of features in the training data.</span>
+
+<span class="sd">    x_mean_: array, shape (n_features,)</span>
+<span class="sd">        Estimated mean of each feature.</span>
+
+<span class="sd">    coef_: array, shape (n_features,)</span>
+<span class="sd">        Estimated regression coefficients.</span>
+
+<span class="sd">    y_mean_: float</span>
+<span class="sd">        Estimated intercept.</span>
+
+<span class="sd">    x_scores_: array, shape (n, A)</span>
+<span class="sd">        X scores.</span>
+
+<span class="sd">    x_loadings_: array, shape (n_features, A)</span>
+<span class="sd">        X loadings.</span>
+
+<span class="sd">    x_weights_: array, shape (n_features, A)</span>
+<span class="sd">        X weights.</span>
+
+<span class="sd">    y_loadings_: array, shape (n_features, A)</span>
+<span class="sd">        Y loadings.</span>
+
+<span class="sd">    is_fitted_: bool</span>
+<span class="sd">        True if the model has been fitted.</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    - R.Nikzad-Langerodi, et al. (2024). (epsilon,delta)-Differentially private partial least squares regression (2024, unpublished).</span>
+<span class="sd">    - Balle, B., &amp; Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.models import EDPLS</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; x = np.random.rand(100, 10)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.random.rand(100,1)</span>
+<span class="sd">    &gt;&gt;&gt; model = EDPLS(A=5, epsilon=0.1, delta=0.01)</span>
+<span class="sd">    &gt;&gt;&gt; model.fit(x, y)</span>
+<span class="sd">    EDPLS(A=5, delta=0.01, epsilon=0.1)</span>
+<span class="sd">    &gt;&gt;&gt; xtest = np.array([5, 7, 4, 3, 2, 1, 6, 8, 9, 10]).reshape(1, -1)</span>
+<span class="sd">    &gt;&gt;&gt; yhat = model.predict(xtest)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">centering</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># Model parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centering</span> <span class="o">=</span> <span class="n">centering</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_fitted_</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="EDPLS.fit">
+<a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.models.EDPLS.fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Fit the EDPLS model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array, shape (n_samples, n_features)</span>
+<span class="sd">            Training data.</span>
+
+<span class="sd">        y : array, shape (n_samples,)</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        self : object</span>
+<span class="sd">           Fitted model instance.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1">### Validate input data</span>
+        <span class="c1"># Check for sparse input</span>
+        <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sparse input is not supported. Please convert your data to dense format.&quot;</span><span class="p">)</span>
+ 
+        <span class="c1"># Validate input arrays</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_nd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">accept_large_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_all_finite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+         
+        <span class="c1"># Flatten y to 1D array</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># Check for complex entries</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+            
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Complex data not supported&quot;</span><span class="p">)</span>
+        
+        
+        <span class="c1">### Preliminaries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features_in_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_mean_</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">)</span>
+
+        <span class="c1"># Mean centering</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centering</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_mean_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_mean_</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_mean_</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span>
+
+
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_</span> 
+
+        <span class="c1">### Fit model</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">edpls</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_weights_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_loadings_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_loadings_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_scores_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_residuals_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_residuals_</span>  <span class="o">=</span> <span class="n">results</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_fitted_</span> <span class="o">=</span> <span class="kc">True</span> 
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    
+    
+<div class="viewcode-block" id="EDPLS.predict">
+<a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.models.EDPLS.predict">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predict y using the fitted EDPLS model.</span>
+
+<span class="sd">        Parameters</span>
+
+<span class="sd">        ----------</span>
+
+<span class="sd">        x: numpy array of shape (n_samples_test, n_features)</span>
+<span class="sd">            Test data matrix to perform the prediction on.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        yhat: numpy array of shape (n_samples_test, )</span>
+<span class="sd">            Predicted response values for the test data.</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Check if the model has been fitted</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;is_fitted_&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_fitted_</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NotFittedError</span><span class="p">(</span><span class="s2">&quot;This DIPLS instance is not fitted yet. Call &#39;fit&#39; with appropriate arguments before using this estimator.&quot;</span><span class="p">)</span>
+        
+        
+        <span class="c1"># Check for sparse input</span>
+        <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sparse input is not supported. Please convert your data to dense format.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Validate input array</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_nd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_all_finite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+        <span class="c1"># Center and scale x</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centering</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,:]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_mean_</span>
+
+
+        <span class="c1"># Predict y</span>
+        <span class="n">yhat</span> <span class="o">=</span> <span class="n">x</span><span class="nd">@self</span><span class="o">.</span><span class="n">coef_</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_mean_</span>
+
+
+        <span class="k">return</span> <span class="n">yhat</span></div>
+</div>
 
 </pre></div>
 

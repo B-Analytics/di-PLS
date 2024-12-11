@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diPLSlib.utils.misc &mdash; diPLSlib 2.0.0 documentation</title>
+  <title>diPLSlib.utils.misc &mdash; diPLSlib 2.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../../../_static/documentation_options.js?v=4d935f96"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -76,6 +76,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span> 
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">f</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">exp</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erf</span>
 
 <div class="viewcode-block" id="gengaus">
 <a class="viewcode-back" href="../../../diPLSlib.utils.html#diPLSlib.utils.misc.gengaus">[docs]</a>
@@ -223,6 +225,98 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(((</span><span class="n">y</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">-</span><span class="n">yhat</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="calibrateAnalyticGaussianMechanism">
+<a class="viewcode-back" href="../../../diPLSlib.utils.html#diPLSlib.utils.misc.calibrateAnalyticGaussianMechanism">[docs]</a>
+<span class="k">def</span> <span class="nf">calibrateAnalyticGaussianMechanism</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">GS</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="mf">1.e-12</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Calibrate a Gaussian perturbation for differential privacy using the analytic Gaussian mechanism of [Balle and Wang, ICML&#39;18]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    epsilon : float</span>
+<span class="sd">        Privacy parameter epsilon</span>
+
+<span class="sd">    delta : float</span>
+<span class="sd">        Desired privacy failure probability</span>
+
+<span class="sd">    GS : float</span>
+<span class="sd">        Upper bound on the L2-sensitivity of the function to which the mechanism is applied</span>
+
+<span class="sd">    tol : float</span>
+<span class="sd">        Error tolerance for binary search</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sigma : float</span>
+<span class="sd">        Standard deviation of Gaussian noise needed to achieve (epsilon,delta)-DP under global sensitivity GS</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Balle, B., &amp; Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from diPLSlib.utils.misc import calibrateAnalyticGaussianMechanism</span>
+<span class="sd">    &gt;&gt;&gt; calibrateAnalyticGaussianMechanism(1.0, 1e-5, 1.0)</span>
+<span class="sd">    3.730631634944469</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">Phi</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">erf</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">caseA</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Phi</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">epsilon</span><span class="o">*</span><span class="n">s</span><span class="p">))</span> <span class="o">-</span> <span class="n">exp</span><span class="p">(</span><span class="n">epsilon</span><span class="p">)</span><span class="o">*</span><span class="n">Phi</span><span class="p">(</span><span class="o">-</span><span class="n">sqrt</span><span class="p">(</span><span class="n">epsilon</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="mf">2.0</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">caseB</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Phi</span><span class="p">(</span><span class="o">-</span><span class="n">sqrt</span><span class="p">(</span><span class="n">epsilon</span><span class="o">*</span><span class="n">s</span><span class="p">))</span> <span class="o">-</span> <span class="n">exp</span><span class="p">(</span><span class="n">epsilon</span><span class="p">)</span><span class="o">*</span><span class="n">Phi</span><span class="p">(</span><span class="o">-</span><span class="n">sqrt</span><span class="p">(</span><span class="n">epsilon</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="mf">2.0</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">doubling_trick</span><span class="p">(</span><span class="n">predicate_stop</span><span class="p">,</span> <span class="n">s_inf</span><span class="p">,</span> <span class="n">s_sup</span><span class="p">):</span>
+        <span class="k">while</span><span class="p">(</span><span class="ow">not</span> <span class="n">predicate_stop</span><span class="p">(</span><span class="n">s_sup</span><span class="p">)):</span>
+            <span class="n">s_inf</span> <span class="o">=</span> <span class="n">s_sup</span>
+            <span class="n">s_sup</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">s_inf</span>
+        <span class="k">return</span> <span class="n">s_inf</span><span class="p">,</span> <span class="n">s_sup</span>
+
+    <span class="k">def</span> <span class="nf">binary_search</span><span class="p">(</span><span class="n">predicate_stop</span><span class="p">,</span> <span class="n">predicate_left</span><span class="p">,</span> <span class="n">s_inf</span><span class="p">,</span> <span class="n">s_sup</span><span class="p">):</span>
+        <span class="n">s_mid</span> <span class="o">=</span> <span class="n">s_inf</span> <span class="o">+</span> <span class="p">(</span><span class="n">s_sup</span><span class="o">-</span><span class="n">s_inf</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="k">while</span><span class="p">(</span><span class="ow">not</span> <span class="n">predicate_stop</span><span class="p">(</span><span class="n">s_mid</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">predicate_left</span><span class="p">(</span><span class="n">s_mid</span><span class="p">)):</span>
+                <span class="n">s_sup</span> <span class="o">=</span> <span class="n">s_mid</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">s_inf</span> <span class="o">=</span> <span class="n">s_mid</span>
+            <span class="n">s_mid</span> <span class="o">=</span> <span class="n">s_inf</span> <span class="o">+</span> <span class="p">(</span><span class="n">s_sup</span><span class="o">-</span><span class="n">s_inf</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="k">return</span> <span class="n">s_mid</span>
+
+    <span class="n">delta_thr</span> <span class="o">=</span> <span class="n">caseA</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">delta</span> <span class="o">==</span> <span class="n">delta_thr</span><span class="p">):</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">delta</span> <span class="o">&gt;</span> <span class="n">delta_thr</span><span class="p">):</span>
+            <span class="n">predicate_stop_DT</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">caseA</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">delta</span>
+            <span class="n">function_s_to_delta</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">caseA</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">predicate_left_BS</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">function_s_to_delta</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">delta</span>
+            <span class="n">function_s_to_alpha</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">s</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">predicate_stop_DT</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">caseB</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">delta</span>
+            <span class="n">function_s_to_delta</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">caseB</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">predicate_left_BS</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">function_s_to_delta</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">delta</span>
+            <span class="n">function_s_to_alpha</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">s</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+
+        <span class="n">predicate_stop_BS</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span> <span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">function_s_to_delta</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="n">delta</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">tol</span>
+
+        <span class="n">s_inf</span><span class="p">,</span> <span class="n">s_sup</span> <span class="o">=</span> <span class="n">doubling_trick</span><span class="p">(</span><span class="n">predicate_stop_DT</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">s_final</span> <span class="o">=</span> <span class="n">binary_search</span><span class="p">(</span><span class="n">predicate_stop_BS</span><span class="p">,</span> <span class="n">predicate_left_BS</span><span class="p">,</span> <span class="n">s_inf</span><span class="p">,</span> <span class="n">s_sup</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">function_s_to_alpha</span><span class="p">(</span><span class="n">s_final</span><span class="p">)</span>
+        
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">GS</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">epsilon</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sigma</span></div>
 
 </pre></div>
 
