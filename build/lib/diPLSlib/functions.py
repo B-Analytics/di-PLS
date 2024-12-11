@@ -481,28 +481,29 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
     '''
     :math:`(\epsilon, \delta)`-Differentially Private Partial Least Squares Regression.
 
-    A Gaussian mechanism according to Dwork et al. (2014) is used to privately release weights :math:`\mathbf{W}`, scores :math:`\mathbf{T}`
+    A Gaussian mechanism according to Balle & Wang (2018) is used to privately release weights :math:`\mathbf{W}`, scores :math:`\mathbf{T}`
     and :math:`X/Y`-loadings :math:`\mathbf{P}`/:math:`\mathbf{c}` from the PLS1 algorithm. To this end, for each latent variable, i.i.d. noise from 
-    :math:`\mathcal{N}(0,\sigma^2)` with variance
+    :math:`\mathcal{N}(0,\sigma^2)` with variance satisfying
     
     .. math::
-        \sigma^2 = \\frac{\Delta_2(\cdot)^2 \cdot 2 \ln(1.25/\delta)}{\epsilon^2},
+           \Phi\left( \\frac{\Delta}{2\sigma} - \\frac{\epsilon\sigma}{\Delta} \\right) - e^{\epsilon} \Phi\left( -\\frac{\Delta}{2\sigma} - \\frac{\epsilon\sigma}{\Delta} \\right)\leq \delta,
 
-    is added to the weights, scores and loadings, whereas the sensitivity :math:`\Delta_2(\cdot)` for the functions releasing the corresponding quantities is calculated as follows:
-
-    .. math::
-        \Delta_2(w) = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \|w(\mathbf{x}, y) - w(\mathbf{x}'y')\|_2 \leq \sup_{(\mathbf{x}, y), (\mathbf{x}', y')} \left(\|\mathbf{x} - \mathbf{x}'\|_2 \cdot \|y\| +  \|\mathbf{x}\|_2 \cdot \|y - y'\|\\right)
+    with :math:`\Phi(t) = \mathrm P[\mathcal{N}(0,1)\leq t]` (i.e., the CDF of the standard univariate Gaussian distribution), is added to the weights, scores and loadings, whereas the sensitivity :math:`\Delta(\cdot)` for the functions releasing the corresponding quantities is calculated as follows:
 
     .. math::
-        \Delta_2(t) = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|t(\mathbf{x}, \mathbf{w}) - t(\mathbf{x}', \mathbf{w}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)
+        \Delta(w) = \sup_{(\mathbf{x}, y)} |y| \|\mathbf{x}\|_2
 
     .. math::
-        \Delta_2(p) = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|p(\mathbf{x}, \mathbf{t}) - t(\mathbf{x}', \mathbf{t}')\|_2 \leq \left(2\cdot\sup_{\mathbf{x}} \|\mathbf{x}\|_2\\right)
+        \Delta(t) \leq \sup_{\mathbf{x}}  \|\mathbf{x}\|_2
 
     .. math::
-        \Delta_2(t) = \sup_{(\mathbf{x}, y), (\mathbf{x}', y')}  \|c(\mathbf{t}, y) - t(\mathbf{t}', y')\|_2 \leq \left(2\cdot\sup_{y} \|y\|\\right)
+        \Delta(p) \leq \sup_{\mathbf{x}}  \|\mathbf{x}\|_2
+
+    .. math::
+        \Delta(c) \leq \sup_{y}  |y|.
     
-    
+    Note that in contrast to the Gaussian mechanism, proposed in Dwork et al. (2006) and Dwork et al. (2014), the mechanism of Balle & Wang (2018) guarantees :math:`(\epsilon, \delta)`-differential privacy 
+    for any value of :math:`\epsilon > 0` and not only for :math:`\epsilon \leq 1`.
 
     Parameters
     ----------
@@ -551,7 +552,7 @@ def edpls(x:np.ndarray, y:np.ndarray, n_components:int, epsilon:float, delta:flo
     References
     ----------
 
-    - Dwork, C., & Roth, A. (2014). The algorithmic foundations of differential privacy. Foundations and Trends® in Theoretical Computer Science, 9(3–4), 211-407.
+    - R.Nikzad-Langerodi, et al. (2024). (epsilon,delta)-Differentially private partial least squares regression (2024, unpublished).
     - Balle, B., & Wang, Y. X. (2018, July). Improving the gaussian mechanism for differential privacy: Analytical calibration and optimal denoising. In International Conference on Machine Learning (pp. 394-403). PMLR.
 
     Examples
