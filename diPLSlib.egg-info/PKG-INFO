@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: diPLSlib
-Version: 2.4.0
+Version: 2.4.2
 Summary: Python package for domain adaptation in multivariate regression
 Home-page: https://github.com/B-Analytics/di-PLS
 Author: Ramin Nikzad-Langerodi
@@ -16,15 +16,34 @@ Requires-Dist: matplotlib
 Requires-Dist: scipy
 Requires-Dist: scikit-learn
 
-# Domain-invariant partial least squares regression (di-PLS)
+# diPLSlib: A Python library for domain adaptation in multivariate calibration
 
 ![](https://img.shields.io/badge/python-3.13-blue.svg)
 ![](https://static.pepy.tech/badge/diplslib)
 
-
-Python implementation of (m)di-PLS for domain adaptation in multivariate regression problems. 
-
 ![](https://user-images.githubusercontent.com/77445667/104728864-d5fede80-5737-11eb-8aad-59f9901a0cf4.png)
+
+diPLSlib has been created to build privacy-preserving regression models and to perform calibration model maintenance by domain adaptation. It has a scikit-learn compatible API and features following methods:
+
+- (Multiple) Domain-invariant partial least squares regression (di-PLS/mdi-PLS)
+- Graph-based calibration transfer (GCT-PLS)
+- $(\epsilon, \delta)$-differentially private partial least squares regression (edPLS)
+
+**Citation**: If you use this library in your research, please cite the following reference:
+
+```
+Nikzad-Langerodi R.(2024). diPLSlib : A Python library for domain adaptation in multivariate calibration (version 2.4.1). URL: https://di-pls.readthedocs.io/
+```
+or in Bibtex format :
+```bibtex
+@misc{nikzad2024diPLSlib,
+author = {Nikzad-Langerodi, Ramin},
+month = {12},
+title = {diPLSlib: A Python library for domain adaptation in multivariate calibration},
+url = {https://di-pls.readthedocs.io/},
+year = {2024}
+}
+```
 
 # Installation
 ```bash
@@ -88,11 +107,11 @@ m.fit(X, y)
 ## Examples
 For more examples, please refer to the [Notebooks](notebooks):
 
-- [Domain adaptation with di-PLS](notebooks/demo_diPLS.ipynb)
-- [Including multiple domains (mdi-PLS)](notebooks/demo_mdiPLS.ipynb)
-- [Implicit calibration transfer with GCT-PLS](notebooks/demo_gctPLS.ipynb)
-- [Model selection with `scikit-learn`](notebooks/demo_ModelSelection_SciKitLearn.ipynb)
-- [Privacy-preserving regression with EDPLS](notebooks/demo_edPLS.ipynb)
+- [Domain adaptation with di-PLS](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_diPLS.ipynb)
+- [Including multiple domains (mdi-PLS)](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_mdiPLS.ipynb)
+- [Implicit calibration transfer with GCT-PLS](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_gctPLS.ipynb)
+- [Model selection with `scikit-learn`](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_ModelSelection_SciKitLearn.ipynb)
+- [Privacy-preserving regression with EDPLS](https://github.com/B-Analytics/diPLSlib/blob/main/notebooks/demo_edPLS.ipynb)
 
 # Documentation
 The documentation can be found [here](https://di-pls.readthedocs.io/en/latest/diPLSlib.html).
@@ -117,10 +136,9 @@ Knowledge-Based Systems, Volume 210, 2020, https://doi.org/10.1016/j.knosys.2020
 
 - *Ramin Nikzad-Langerodi & Florian Sobieczky (2021). Graph‐based calibration transfer. Journal of Chemometrics, 35(4), e3319. https://doi.org/10.1002/cem.3319*
 
-- *Ramin Nikzad-Langerodi, Du Nguyen Duy, Mohit Kumar and Mathab Alghasi (2024), "(epsilon, delta)-differentially private parital least squares regression", unpublished.*
+- *Ramin Nikzad-Langerodi,  Mohit Kumar, Du Nguyen Duy, and Mahtab Alghasi (2024), "(epsilon, delta)-Differentially Private Partial Least Squares Regression", unpublished.*
 
 # Contact us
 Bottleneck Analytics GmbH  
 info@bottleneck-analytics.com
-
 

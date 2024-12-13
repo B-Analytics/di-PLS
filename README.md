@@ -124,4 +124,3 @@ Knowledge-Based Systems, Volume 210, 2020, https://doi.org/10.1016/j.knosys.2020
 Bottleneck Analytics GmbH  
 info@bottleneck-analytics.com
 
-

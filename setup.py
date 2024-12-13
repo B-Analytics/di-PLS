@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="diPLSlib",
-    version="2.4.0",
+    version="2.4.2",
     author="Ramin Nikzad-Langerodi",
     author_email="ramin.nikzad-langerodi@scch.at",
     description="Python package for domain adaptation in multivariate regression",

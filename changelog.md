@@ -2,7 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unrelease] - 2024-11-05
+## [2.4.2] - 2024-12-13
+
+### Added
+- **kwargs for `fit` functions
+
+### Changed
+- Changed the signature of the `fit` method in the `DIPLS` and `GCTPLS` classes to accept **kwargs.
+
+### Fixed
+- N/A
+
+### Removed
+- N/A
+
+### Breaking Changes
+- N/A
+
+## [unreleased] - 2024-11-05
 
 ### Added
 - 'check_estimator()' added to the doctests to validate model classes.

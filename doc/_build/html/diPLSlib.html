@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diPLSlib package &mdash; diPLSlib 2.4.0 documentation</title>
+  <title>diPLSlib package &mdash; diPLSlib 2.4.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=4d935f96"></script>
+      <script src="_static/documentation_options.js?v=de1351e5"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -493,7 +493,7 @@ will be rescaled to the mean of the provided array.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="diPLSlib.models.DIPLS.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/models.html#DIPLS.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.models.DIPLS.fit" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/models.html#DIPLS.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.models.DIPLS.fit" title="Link to this definition"></a></dt>
 <dd><p>Fit the DIPLS model.</p>
 <p>This method fits the domain-invariant partial least squares (di-PLS) model
 using the provided source and target domain data. It can handle both single 
@@ -509,6 +509,9 @@ and multiple target domains.</p>
 </dd>
 <dt><strong>xt</strong><span class="classifier">Union[ndarray of shape (n_samples_target, n_features), List[ndarray]]</span></dt><dd><p>Target domain X-data. Can be a single target domain or a list of arrays 
 representing multiple target domains. If not provided, defaults to <cite>X</cite>.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Additional keyword arguments to pass to the model (e.g., 
+for model selection purposes).</p>
 </dd>
 </dl>
 </dd>
@@ -680,7 +683,7 @@ sub-estimator of a meta-estimator, e.g. used inside a
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#diPLSlib.models.EDPLS.fit" title="diPLSlib.models.EDPLS.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(X, y)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#diPLSlib.models.EDPLS.fit" title="diPLSlib.models.EDPLS.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(X, y, **kwargs)</p></td>
 <td><p>Fit the EDPLS model.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata_routing</span></code>()</p></td>
@@ -728,7 +731,7 @@ sub-estimator of a meta-estimator, e.g. used inside a
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="diPLSlib.models.EDPLS.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/models.html#EDPLS.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.models.EDPLS.fit" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/models.html#EDPLS.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.models.EDPLS.fit" title="Link to this definition"></a></dt>
 <dd><p>Fit the EDPLS model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -736,6 +739,9 @@ sub-estimator of a meta-estimator, e.g. used inside a
 <dt><strong>X</strong><span class="classifier">array, shape (n_samples, n_features)</span></dt><dd><p>Training data.</p>
 </dd>
 <dt><strong>y</strong><span class="classifier">array, shape (n_samples,)</span></dt><dd><p>Target values.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Additional keyword arguments to pass to the model (e.g., 
+for model selection purposes).</p>
 </dd>
 </dl>
 </dd>
@@ -981,7 +987,7 @@ Journal of Chemometrics, 35(4), e3319.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="diPLSlib.models.GCTPLS.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/models.html#GCTPLS.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.models.GCTPLS.fit" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diPLSlib/models.html#GCTPLS.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diPLSlib.models.GCTPLS.fit" title="Link to this definition"></a></dt>
 <dd><p>Fit the GCT-PLS model to data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -993,6 +999,9 @@ Journal of Chemometrics, 35(4), e3319.</p>
 <dt><strong>xs</strong><span class="classifier">ndarray of shape (n_sample_pairs, n_features)</span></dt><dd><p>Source domain X-data. If not provided, defaults to <cite>X</cite>.</p>
 </dd>
 <dt><strong>xt</strong><span class="classifier">ndarray of shape (n_sample_pairs, n_features)</span></dt><dd><p>Target domain X-data. If not provided, defaults to <cite>X</cite>.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Additional keyword arguments to pass to the model (e.g., 
+for model selection purposes).</p>
 </dd>
 </dl>
 </dd>
