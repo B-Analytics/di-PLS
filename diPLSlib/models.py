@@ -165,7 +165,7 @@ class DIPLS(RegressorMixin, BaseEstimator):
         
 
 
-    def fit(self, X, y, xs=None, xt=None):
+    def fit(self, X, y, xs=None, xt=None, **kwargs):
         """
         Fit the DIPLS model.
 
@@ -187,6 +187,10 @@ class DIPLS(RegressorMixin, BaseEstimator):
         xt : Union[ndarray of shape (n_samples_target, n_features), List[ndarray]]
             Target domain X-data. Can be a single target domain or a list of arrays 
             representing multiple target domains. If not provided, defaults to `X`.
+
+        **kwargs : dict, optional
+            Additional keyword arguments to pass to the model (e.g., 
+            for model selection purposes).
 
 
         Returns
@@ -501,7 +505,7 @@ class GCTPLS(DIPLS):
         self.rescale = rescale
 
         
-    def fit(self, X, y, xs=None, xt=None):
+    def fit(self, X, y, xs=None, xt=None, **kwargs):
         """
         Fit the GCT-PLS model to data.
 
@@ -519,6 +523,10 @@ class GCTPLS(DIPLS):
 
         xt : ndarray of shape (n_sample_pairs, n_features)
             Target domain X-data. If not provided, defaults to `X`.
+
+        **kwargs : dict, optional
+            Additional keyword arguments to pass to the model (e.g., 
+            for model selection purposes).
  
 
         Returns
@@ -697,7 +705,7 @@ class EDPLS(DIPLS):
         self.is_fitted_ = False
 
 
-    def fit(self, X:np.ndarray, y:np.ndarray):
+    def fit(self, X:np.ndarray, y:np.ndarray, **kwargs):
         '''
         Fit the EDPLS model.
 
@@ -708,6 +716,10 @@ class EDPLS(DIPLS):
 
         y : array, shape (n_samples,)
             Target values.
+
+        **kwargs : dict, optional
+            Additional keyword arguments to pass to the model (e.g., 
+            for model selection purposes).
 
         Returns
         -------

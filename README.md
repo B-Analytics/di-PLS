@@ -3,10 +3,29 @@
 ![](https://img.shields.io/badge/python-3.13-blue.svg)
 ![](https://static.pepy.tech/badge/diplslib)
 
-
-Python implementation of (m)di-PLS for domain adaptation in multivariate regression problems. 
-
 ![](https://user-images.githubusercontent.com/77445667/104728864-d5fede80-5737-11eb-8aad-59f9901a0cf4.png)
+
+diPLSlib has been created to build privacy-preserving regression models and to perform calibration model maintenance by domain adaptation. It has a scikit-learn compatible API and features following methods:
+
+- (Multiple) Domain-invariant partial least squares regression (di-PLS/mdi-PLS)
+- Graph-based calibration transfer (GCT-PLS)
+- $(\epsilon, \delta)$-differentially private partial least squares regression (edPLS)
+
+**Citation**: If you use this library in your research, please cite the following reference:
+
+```
+Nikzad-Langerodi R.(2024). diPLSlib : A Python library for domain adaptation in multivariate calibration (version 2.4.1). URL: https://di-pls.readthedocs.io/
+```
+or in Bibtex format :
+```bibtex
+@misc{nikzad2024diPLSlib,
+author = {Nikzad-Langerodi, Ramin},
+month = {12},
+title = {diPLSlib: A Python library for domain adaptation in multivariate calibration},
+url = {https://di-pls.readthedocs.io/},
+year = {2024}
+}
+```
 
 # Installation
 ```bash
@@ -104,5 +123,4 @@ Knowledge-Based Systems, Volume 210, 2020, https://doi.org/10.1016/j.knosys.2020
 # Contact us
 Bottleneck Analytics GmbH  
 info@bottleneck-analytics.com
-
 

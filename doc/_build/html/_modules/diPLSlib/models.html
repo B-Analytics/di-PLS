@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>diPLSlib.models &mdash; diPLSlib 2.4.0 documentation</title>
+  <title>diPLSlib.models &mdash; diPLSlib 2.4.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4d935f96"></script>
+      <script src="../../_static/documentation_options.js?v=de1351e5"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -240,7 +240,7 @@
 
 <div class="viewcode-block" id="DIPLS.fit">
 <a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.models.DIPLS.fit">[docs]</a>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fit the DIPLS model.</span>
 
@@ -262,6 +262,10 @@
 <span class="sd">        xt : Union[ndarray of shape (n_samples_target, n_features), List[ndarray]]</span>
 <span class="sd">            Target domain X-data. Can be a single target domain or a list of arrays </span>
 <span class="sd">            representing multiple target domains. If not provided, defaults to `X`.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to the model (e.g., </span>
+<span class="sd">            for model selection purposes).</span>
 
 
 <span class="sd">        Returns</span>
@@ -585,7 +589,7 @@
         
 <div class="viewcode-block" id="GCTPLS.fit">
 <a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.models.GCTPLS.fit">[docs]</a>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fit the GCT-PLS model to data.</span>
 
@@ -603,6 +607,10 @@
 
 <span class="sd">        xt : ndarray of shape (n_sample_pairs, n_features)</span>
 <span class="sd">            Target domain X-data. If not provided, defaults to `X`.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to the model (e.g., </span>
+<span class="sd">            for model selection purposes).</span>
 <span class="sd"> </span>
 
 <span class="sd">        Returns</span>
@@ -787,7 +795,7 @@
 
 <div class="viewcode-block" id="EDPLS.fit">
 <a class="viewcode-back" href="../../diPLSlib.html#diPLSlib.models.EDPLS.fit">[docs]</a>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Fit the EDPLS model.</span>
 
@@ -798,6 +806,10 @@
 
 <span class="sd">        y : array, shape (n_samples,)</span>
 <span class="sd">            Target values.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Additional keyword arguments to pass to the model (e.g., </span>
+<span class="sd">            for model selection purposes).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
